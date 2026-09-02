@@ -1,8 +1,6 @@
 import {
   ArrowUpRight,
   CalendarDays,
-  Camera,
-  ChevronRight,
   CircleDot,
   Clock3,
   Database,
@@ -10,140 +8,10 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-
-const licenses = {
-  cc0: {
-    label: "CC0",
-    href: "https://creativecommons.org/publicdomain/zero/1.0/",
-  },
-  ccBySa: {
-    label: "CC BY-SA 4.0",
-    href: "https://creativecommons.org/licenses/by-sa/4.0/",
-  },
-};
-
-const squad = [
-  {
-    name: "Alisson",
-    fullName: "Alisson Becker",
-    number: "01",
-    position: "门将",
-    role: "最后防线 · 启动进攻",
-    image: "/players/alisson.jpg",
-    photoPosition: "50% 18%",
-    credit: "Bryan Berlin",
-    license: licenses.ccBySa,
-    source: "https://commons.wikimedia.org/wiki/File:Alisson_Becker_Brazil_V_Morocco_13_June_2026-108.jpg",
-  },
-  {
-    name: "Van Dijk",
-    fullName: "Virgil van Dijk",
-    number: "04",
-    position: "中卫",
-    role: "队长 · 防线指挥",
-    image: "/players/van-dijk.jpg",
-    photoPosition: "50% 18%",
-    credit: "Timmy96",
-    license: licenses.cc0,
-    source: "https://commons.wikimedia.org/wiki/File:Virgil_van_Dijk_06042025_(2).jpg",
-  },
-  {
-    name: "Kerkez",
-    fullName: "Milos Kerkez",
-    number: "06",
-    position: "左后卫",
-    role: "高频推进 · 边路强度",
-    image: "/players/kerkez.jpg",
-    photoPosition: "50% 20%",
-    credit: "Timmy96",
-    license: licenses.cc0,
-    source: "https://commons.wikimedia.org/wiki/File:Milos_Kerkez_04012026_(1).jpg",
-  },
-  {
-    name: "Frimpong",
-    fullName: "Jeremie Frimpong",
-    number: "30",
-    position: "右后卫",
-    role: "纵深冲刺 · 宽度制造",
-    image: "/players/frimpong.jpg",
-    photoPosition: "50% 18%",
-    credit: "Timmy96",
-    license: licenses.cc0,
-    source: "https://commons.wikimedia.org/wiki/File:Jeremie_Frimpong_04012026_(2).jpg",
-  },
-  {
-    name: "Gravenberch",
-    fullName: "Ryan Gravenberch",
-    number: "38",
-    position: "中场",
-    role: "抗压转身 · 中路衔接",
-    image: "/players/gravenberch.jpg",
-    photoPosition: "50% 16%",
-    credit: "Timmy96",
-    license: licenses.cc0,
-    source: "https://commons.wikimedia.org/wiki/File:Ryan_Gravenberch_04012026_(3).jpg",
-  },
-  {
-    name: "Szoboszlai",
-    fullName: "Dominik Szoboszlai",
-    number: "08",
-    position: "中场",
-    role: "压迫引擎 · 后排冲击",
-    image: "/players/szoboszlai.jpg",
-    photoPosition: "50% 12%",
-    credit: "Timmy96",
-    license: licenses.cc0,
-    source: "https://commons.wikimedia.org/wiki/File:Dominik_Szoboszlai_06042025_(2).jpg",
-  },
-  {
-    name: "Wirtz",
-    fullName: "Florian Wirtz",
-    number: "07",
-    position: "中场",
-    role: "空间识别 · 创造核心",
-    image: "/players/wirtz.jpg",
-    photoPosition: "50% 18%",
-    credit: "Timmy96",
-    license: licenses.cc0,
-    source: "https://commons.wikimedia.org/wiki/File:Florian_Wirtz_04012026_(3)_(extracted).jpg",
-  },
-  {
-    name: "Isak",
-    fullName: "Alexander Isak",
-    number: "09",
-    position: "前锋",
-    role: "无球攻击 · 禁区终结",
-    image: "/players/isak.jpg",
-    photoPosition: "50% 18%",
-    credit: "Rolandhino1",
-    license: licenses.ccBySa,
-    source: "https://commons.wikimedia.org/wiki/File:UEFA_EURO_qualifiers_Sweden_vs_Spain_20191015_Alexander_Isak_56.jpg",
-  },
-  {
-    name: "B. Barcola",
-    fullName: "Bradley Barcola",
-    number: "29",
-    position: "边锋",
-    role: "一对一 · 变速突破",
-    image: "/players/barcola.jpg",
-    photoPosition: "50% 16%",
-    credit: "Bryan Berlin",
-    license: licenses.ccBySa,
-    source: "https://commons.wikimedia.org/wiki/File:Bradley_Barcola_France_v_Senegal_16_June_2026-481.jpg",
-  },
-  {
-    name: "V. Muñoz",
-    fullName: "Víctor Muñoz",
-    number: "23",
-    position: "边锋",
-    role: "反复冲击 · 回防投入",
-    image: "/players/victor-munoz.jpg",
-    photoPosition: "50% 18%",
-    credit: "Bryan Berlin / WikiPortraits",
-    license: licenses.ccBySa,
-    source: "https://commons.wikimedia.org/wiki/File:Victor_Munoz_France_v_Spain_7.24.26-017.jpg",
-  },
-];
+import Link from "next/link";
+import { PhotoCredits } from "./photo-credits";
+import { PlayerCard } from "./player-card";
+import { coreSquad } from "./squad-data";
 
 const news = [
   {
@@ -216,7 +84,7 @@ export default function Home() {
 
         <nav aria-label="主要导航">
           <a href="#matchday">比赛</a>
-          <a href="#squad">阵容</a>
+          <Link href="/squad">阵容</Link>
           <a href="#tactics">战术</a>
           <a href="#updates">动态</a>
         </nav>
@@ -317,56 +185,19 @@ export default function Home() {
             <span className="section-index">01 / SQUAD</span>
             <h2>新时代的骨架</h2>
           </div>
-          <p>不是完整名单，而是第一版最值得持续观察的十个战术节点。</p>
+          <div className="squad-heading-action">
+            <p>第一版最值得持续观察的十个战术节点。</p>
+            <Link href="/squad">查看轮换与替补 <ArrowUpRight aria-hidden="true" size={16} /></Link>
+          </div>
         </div>
 
         <div className="squad-grid">
-          {squad.map((player) => (
-            <article className="player-card" key={player.name}>
-              <div className="player-photo">
-                <img
-                  src={player.image}
-                  alt={`${player.fullName} 的真实照片`}
-                  loading="lazy"
-                  style={{ objectPosition: player.photoPosition }}
-                />
-                <div className="player-photo-shade" aria-hidden="true" />
-                <div className="player-number">{player.number}</div>
-              </div>
-              <div className="player-card-copy">
-                <div className="player-info">
-                  <span>{player.position}</span>
-                  <h3>{player.name}</h3>
-                  <p>{player.role}</p>
-                </div>
-                <ChevronRight aria-hidden="true" size={18} />
-              </div>
-            </article>
+          {coreSquad.map((player) => (
+            <PlayerCard player={player} key={player.slug} />
           ))}
         </div>
 
-        <details className="photo-credits">
-          <summary>
-            <Camera aria-hidden="true" size={17} />
-            查看球员照片来源与授权
-          </summary>
-          <div className="photo-credit-grid">
-            {squad.map((player) => (
-              <div className="photo-credit-item" key={`${player.name}-credit`}>
-                <a href={player.source} target="_blank" rel="noreferrer">
-                  <strong>{player.fullName}</strong>
-                  <ArrowUpRight aria-hidden="true" size={14} />
-                </a>
-                <span>
-                  {player.credit} ·{" "}
-                  <a href={player.license.href} target="_blank" rel="noreferrer">
-                    {player.license.label}
-                  </a>
-                </span>
-              </div>
-            ))}
-          </div>
-        </details>
+        <PhotoCredits players={coreSquad} />
 
         <div className="captain-strip">
           <div className="captain-monogram">VVD</div>
