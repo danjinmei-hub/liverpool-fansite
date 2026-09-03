@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 export const metadata: Metadata = {
   title: "Alisson Becker｜RED ERA 球员档案",
   description:
-    "阿利松·贝克尔的利物浦人物档案：技术画像、红军时间线、决定性瞬间与可核验来源。",
+    "阿利松·贝克尔的利物浦人物档案：技术画像、红军意义、决定性瞬间与可核验来源。",
 };
 
 const facts = [
@@ -38,36 +38,24 @@ const keeperPrinciples = [
   },
 ];
 
-const timeline = [
+const redStoryArguments = [
   {
-    date: "2018.07",
-    title: "来到安菲尔德",
-    text: "从罗马加盟，并立即成为首发门将。利物浦寻找多年的稳定感，从这里开始有了具体的名字。",
+    number: "01",
+    label: "TRUST",
+    title: "从不安，到信任",
+    text: "他没有让危险消失，却改变了所有人面对危险时的反应。中卫可以把注意力放在下一次压迫，安菲尔德在单刀出现时也不会立刻认定结局。那种近乎日常的可靠，才是最难复制的能力。",
   },
   {
-    date: "2018.12",
-    title: "那次像进球一样的扑救",
-    text: "欧冠小组赛最后时刻封出米利克的近距离射门，守住对那不勒斯的 1–0，也守住了后来通往马德里的道路。",
+    number: "02",
+    label: "COURAGE",
+    title: "让利物浦敢于冒险",
+    text: "高位防线意味着身后必须有人管理大片空间。阿利松的出击、单刀判断和第一脚传球，让十名队友可以作为一个整体向前。他守住的不只是球门，也是利物浦进攻性的边界。",
   },
   {
-    date: "2019.06",
-    title: "马德里，零封与第六冠",
-    text: "欧冠决赛面对托特纳姆热刺完成八次扑救。一个赛季建立的信任，最终落在了最重的一座奖杯上。",
-  },
-  {
-    date: "2020",
-    title: "三十年的等待结束",
-    text: "利物浦成为英格兰顶级联赛冠军。门前的镇定，是那支冠军球队最牢固的结构之一。",
-  },
-  {
-    date: "2021.05",
-    title: "他跑向了另一端的禁区",
-    text: "第 95 分钟头球绝杀西布朗，成为利物浦队史第一位取得进球的门将，并帮助球队守住欧冠资格的希望。",
-  },
-  {
-    date: "2025",
-    title: "再次成为英超冠军",
-    text: "第二座英超冠军写入履历。时间改变了身前的阵容，却没有改变球迷看见他时的那份笃定。",
+    number: "03",
+    label: "LEGACY",
+    title: "当可靠成为传奇",
+    text: "如果只有稳定，他仍会是一位伟大门将；那不勒斯的封堵、西布朗的头球，以及大赛中一次次不动声色的处理，则让这种伟大进入了共同记忆。传奇不是集锦的总和，而是球队最需要答案时，球迷总会想到同一个人。",
   },
 ];
 
@@ -228,22 +216,53 @@ export default function AlissonProfilePage() {
           </div>
           <div>
             <p className="profile-overline">红军故事</p>
-            <h2 id="story-title">信任不是一场比赛建立的。</h2>
+            <h2 id="story-title">传奇，不只是因为他扑出了什么。</h2>
           </div>
         </div>
 
-        <ol className="profile-timeline">
-          {timeline.map((item, index) => (
-            <li key={item.date}>
-              <time>{item.date}</time>
-              <span className="timeline-index">0{index + 1}</span>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+        <div className="red-story-thesis">
+          <div>
+            <p className="red-story-label">WHAT HE CHANGED</p>
+            <p className="red-story-lead">
+              阿利松改变的，不只是利物浦能扑出多少球，而是整支球队敢于承担多大的风险。
+            </p>
+          </div>
+          <p className="red-story-context">
+            传奇门将常被一连串高光定义。但他之于利物浦，首先是一种结构性的改变：
+            门将不再只是防线最后的补丁，而成为整套足球能够向前展开的根基。
+          </p>
+        </div>
+
+        <div className="red-story-arguments">
+          {redStoryArguments.map((item) => (
+            <article key={item.number}>
+              <div className="red-story-index">
+                <span>{item.number}</span>
+                <small>{item.label}</small>
               </div>
-            </li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
           ))}
-        </ol>
+        </div>
+
+        <div className="red-story-coda">
+          <p>
+            他让一支本就勇敢的球队，<br />
+            <em>敢于离自己的球门更远。</em>
+          </p>
+          <a
+            className="red-story-voice"
+            href="https://www.liverpoolfc.com/news/first-team/329884-van-dijk-alisson-save-liverpool-napoli-reaction"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="查看范戴克对阿利松扑救的评价"
+          >
+            <strong>“Fantastic.”</strong>
+            <span>VIRGIL VAN DIJK · NAPOLI, 2018</span>
+            <ArrowUpRight aria-hidden="true" size={15} />
+          </a>
+        </div>
       </section>
 
       <section className="defining-moment" aria-labelledby="moment-title">
