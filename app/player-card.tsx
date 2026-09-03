@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Player } from "./squad-data";
 
 export function PlayerCard({
@@ -7,7 +8,7 @@ export function PlayerCard({
   player: Player;
   profileHint?: boolean;
 }) {
-  return (
+  const card = (
     <article className="player-card" id={player.slug}>
       <div className="player-photo">
         <img
@@ -27,9 +28,16 @@ export function PlayerCard({
           <span>{player.position}</span>
           <h3>{player.name}</h3>
           <p>{player.role}</p>
-          {profileHint ? <small>个人档案 · 下一阶段开放</small> : null}
+          {player.profileHref ? <small>阅读个人档案 ↗</small> : null}
+          {!player.profileHref && profileHint ? <small>个人档案 · 下一阶段开放</small> : null}
         </div>
       </div>
     </article>
   );
+
+  return player.profileHref ? (
+    <Link className="player-card-link" href={player.profileHref} aria-label={`阅读 ${player.fullName} 个人档案`}>
+      {card}
+    </Link>
+  ) : card;
 }

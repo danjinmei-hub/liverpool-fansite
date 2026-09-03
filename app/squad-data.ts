@@ -28,6 +28,7 @@ export type Player = {
   credit: string;
   license: (typeof licenses)[keyof typeof licenses];
   source: string;
+  profileHref?: string;
 };
 
 export const coreSquad: Player[] = [
@@ -45,6 +46,7 @@ export const coreSquad: Player[] = [
     credit: "Timmy96",
     license: licenses.cc0,
     source: "https://commons.wikimedia.org/wiki/File:Alisson_Becker_04012026_(1).jpg",
+    profileHref: "/players/alisson-becker",
   },
   {
     slug: "virgil-van-dijk",
