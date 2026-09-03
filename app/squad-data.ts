@@ -347,7 +347,7 @@ export const rotationSquad: Player[] = [
     role: "接球朝前 · 青春创造",
     group: "中场",
     image: "/players/rotation/nyoni.jpg",
-    photoPosition: "50% 22%",
+    photoPosition: "100% 50%",
     photoContext: "利物浦到场",
     credit: "Timmy96",
     license: licenses.cc0,
