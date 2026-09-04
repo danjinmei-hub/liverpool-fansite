@@ -2114,6 +2114,14 @@ footer > p:nth-child(2) {
   letter-spacing: -.075em;
 }
 
+.player-profile[data-name-fit="narrow"] .profile-hero h1 {
+  font-size: clamp(68px, 8.1vw, 140px);
+}
+
+.player-profile[data-name-fit="compact"] .profile-hero h1 {
+  font-size: clamp(56px, 6.3vw, 118px);
+}
+
 .profile-hero h1 span:last-child {
   margin-left: 9%;
   color: transparent;
@@ -2159,7 +2167,7 @@ footer > p:nth-child(2) {
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 50% 32%;
+  object-position: var(--profile-hero-position, 50% 32%);
   filter: saturate(.72) contrast(1.08) brightness(.76);
   transform: scale(1.015);
 }
@@ -2260,7 +2268,7 @@ footer > p:nth-child(2) {
 }
 
 .profile-portrait-copy h2,
-.keeper-heading h2,
+.performance-heading h2,
 .story-heading h2,
 .human-heading h2,
 .fan-memory h2,
@@ -2325,7 +2333,7 @@ footer > p:nth-child(2) {
   line-height: 1.2;
 }
 
-.keeper-section {
+.profile-performance {
   padding: 150px 0 138px;
   position: relative;
   overflow: hidden;
@@ -2333,8 +2341,8 @@ footer > p:nth-child(2) {
   color: white;
 }
 
-.keeper-section::before {
-  content: "01";
+.profile-performance::before {
+  content: attr(data-motif);
   position: absolute;
   right: -1vw;
   top: 32px;
@@ -2346,26 +2354,26 @@ footer > p:nth-child(2) {
   -webkit-text-stroke: 1px rgba(255,255,255,.055);
 }
 
-.keeper-section > .profile-shell {
+.profile-performance > .profile-shell {
   position: relative;
   z-index: 1;
 }
 
-.keeper-heading {
+.performance-heading {
   display: grid;
   grid-template-columns: 76px minmax(0, 1.2fr) minmax(280px, .65fr);
   gap: clamp(38px, 5vw, 82px);
   align-items: end;
 }
 
-.keeper-heading > p {
+.performance-heading > p {
   margin: 0 0 8px;
   color: rgba(255,255,255,.6);
   font-size: 16px;
   line-height: 1.9;
 }
 
-.keeper-principles {
+.performance-principles {
   margin-top: 90px;
   margin-left: calc(76px + clamp(38px, 5vw, 82px));
   display: grid;
@@ -2374,7 +2382,7 @@ footer > p:nth-child(2) {
   border-bottom: 1px solid rgba(255,255,255,.28);
 }
 
-.keeper-principles article {
+.performance-principles article {
   min-height: 410px;
   padding: 30px 30px 34px;
   display: flex;
@@ -2382,44 +2390,44 @@ footer > p:nth-child(2) {
   border-left: 1px solid rgba(255,255,255,.16);
 }
 
-.keeper-principles article:last-child {
+.performance-principles article:last-child {
   border-right: 1px solid rgba(255,255,255,.16);
 }
 
-.keeper-principles article > div {
+.performance-principles article > div {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 14px;
 }
 
-.keeper-principles article > div span {
+.performance-principles article > div span {
   color: var(--red-bright);
   font-family: "Arial Narrow", "Helvetica Neue", sans-serif;
   font-size: 36px;
   font-weight: 900;
 }
 
-.keeper-principles article > div small {
+.performance-principles article > div small {
   color: rgba(255,255,255,.42);
   font-size: 12px;
   letter-spacing: .12em;
 }
 
-.keeper-principles h3 {
+.performance-principles h3 {
   margin: auto 0 16px;
   font-size: 25px;
   line-height: 1.2;
 }
 
-.keeper-principles p {
+.performance-principles p {
   margin: 0;
   color: rgba(255,255,255,.58);
   font-size: 15px;
   line-height: 1.85;
 }
 
-.keeper-line {
+.performance-line {
   height: 70px;
   margin: 56px 0 0 calc(76px + clamp(38px, 5vw, 82px));
   position: relative;
@@ -2427,9 +2435,9 @@ footer > p:nth-child(2) {
   border-top: 0;
 }
 
-.keeper-line span,
-.keeper-line i,
-.keeper-line b {
+.performance-line span,
+.performance-line i,
+.performance-line b {
   width: 14px;
   height: 14px;
   position: absolute;
@@ -2439,9 +2447,9 @@ footer > p:nth-child(2) {
   background: var(--profile-black);
 }
 
-.keeper-line span { left: 16%; }
-.keeper-line i { left: calc(50% - 7px); }
-.keeper-line b { right: 16%; }
+.performance-line span { left: 16%; }
+.performance-line i { left: calc(50% - 7px); }
+.performance-line b { right: 16%; }
 
 .profile-story {
   padding-top: 160px;
@@ -2906,19 +2914,19 @@ footer > p:nth-child(2) {
   }
 
   .profile-portrait,
-  .keeper-heading,
+  .performance-heading,
   .fan-memory-layout {
     grid-template-columns: 62px minmax(0, 1fr);
   }
 
   .profile-portrait-copy,
-  .keeper-heading > div,
+  .performance-heading > div,
   .fan-memory-layout > div:nth-child(2) {
     grid-column: 2;
   }
 
   .profile-facts,
-  .keeper-heading > p,
+  .performance-heading > p,
   .fan-memory-layout > p {
     grid-column: 2;
   }
@@ -2928,13 +2936,13 @@ footer > p:nth-child(2) {
     margin-top: 20px;
   }
 
-  .keeper-heading > p {
+  .performance-heading > p {
     max-width: 690px;
     margin-top: 34px;
   }
 
-  .keeper-principles,
-  .keeper-line,
+  .performance-principles,
+  .performance-line,
   .red-story-thesis,
   .red-story-arguments,
   .red-story-coda {
@@ -2981,6 +2989,8 @@ footer > p:nth-child(2) {
   }
 
   .profile-back {
+    min-height: 44px;
+    align-items: center;
     font-size: 12px;
   }
 
@@ -2995,7 +3005,7 @@ footer > p:nth-child(2) {
   }
 
   .profile-hero-figure > img {
-    object-position: 51% 30%;
+    object-position: var(--profile-hero-position-mobile, 51% 30%);
     filter: saturate(.66) contrast(1.08) brightness(.58);
   }
 
@@ -3013,6 +3023,7 @@ footer > p:nth-child(2) {
   }
 
   .profile-hero-figure figcaption a {
+    min-height: 44px;
     font-size: 10px;
   }
 
@@ -3031,6 +3042,14 @@ footer > p:nth-child(2) {
   .profile-hero h1 {
     margin-top: 20px;
     font-size: clamp(64px, 22.2vw, 104px);
+  }
+
+  .player-profile[data-name-fit="narrow"] .profile-hero h1 {
+    font-size: clamp(54px, 17.5vw, 86px);
+  }
+
+  .player-profile[data-name-fit="compact"] .profile-hero h1 {
+    font-size: clamp(44px, 13.7vw, 70px);
   }
 
   .profile-hero h1 span:last-child {
@@ -3063,6 +3082,13 @@ footer > p:nth-child(2) {
     display: none;
   }
 
+  .profile-hero-footer > a,
+  .moment-copy a,
+  .profile-footer > a {
+    min-height: 44px;
+    align-items: center;
+  }
+
   .profile-portrait,
   .profile-human {
     padding-top: 96px;
@@ -3087,7 +3113,7 @@ footer > p:nth-child(2) {
   }
 
   .profile-portrait-copy h2,
-  .keeper-heading h2,
+  .performance-heading h2,
   .story-heading h2,
   .human-heading h2,
   .fan-memory h2,
@@ -3119,41 +3145,41 @@ footer > p:nth-child(2) {
     font-size: 16px;
   }
 
-  .keeper-section {
+  .profile-performance {
     padding: 96px 0;
   }
 
-  .keeper-heading {
+  .performance-heading {
     display: block;
   }
 
-  .keeper-heading > p {
+  .performance-heading > p {
     margin-top: 34px;
     font-size: 16px;
   }
 
-  .keeper-principles {
+  .performance-principles {
     margin: 60px 0 0;
     grid-template-columns: 1fr;
   }
 
-  .keeper-principles article {
+  .performance-principles article {
     min-height: 300px;
     padding: 26px 0 28px;
     border-left: 0;
     border-bottom: 1px solid rgba(255,255,255,.16);
   }
 
-  .keeper-principles article:last-child {
+  .performance-principles article:last-child {
     border-right: 0;
     border-bottom: 0;
   }
 
-  .keeper-principles h3 {
+  .performance-principles h3 {
     margin-top: 76px;
   }
 
-  .keeper-line {
+  .performance-line {
     height: 48px;
     margin: 38px 0 0;
   }
