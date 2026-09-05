@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-02T00:00:00.000Z",
+  "lastUpdated": "2026-09-05T03:52:38.619Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -10,37 +10,14 @@
   "source": {
     "name": "football-data.org",
     "url": "https://www.football-data.org/",
-    "mode": "fallback"
+    "mode": "api"
   },
   "lastResult": {
-    "id": 0,
-    "utcDate": "2026-08-29T14:00:00.000Z",
+    "id": 560566,
+    "utcDate": "2026-09-04T19:00:00Z",
     "status": "FINISHED",
-    "matchday": 2,
-    "venue": "Anfield",
-    "homeTeam": {
-      "id": 64,
-      "name": "利物浦",
-      "shortName": "Liverpool",
-      "tla": "LIV"
-    },
-    "awayTeam": {
-      "id": 351,
-      "name": "诺丁汉森林",
-      "shortName": "Nott'm Forest",
-      "tla": "NFO"
-    },
-    "score": {
-      "home": 2,
-      "away": 2
-    }
-  },
-  "nextFixture": {
-    "id": 0,
-    "utcDate": "2026-09-05T14:00:00.000Z",
-    "status": "SCHEDULED",
     "matchday": 3,
-    "venue": "Portman Road",
+    "venue": null,
     "homeTeam": {
       "id": 349,
       "name": "伊普斯维奇",
@@ -54,27 +31,118 @@
       "tla": "LIV"
     },
     "score": {
+      "home": 0,
+      "away": 2
+    }
+  },
+  "nextFixture": {
+    "id": 560573,
+    "utcDate": "2026-09-12T14:00:00Z",
+    "status": "TIMED",
+    "matchday": 4,
+    "venue": null,
+    "homeTeam": {
+      "id": 64,
+      "name": "利物浦",
+      "shortName": "Liverpool",
+      "tla": "LIV"
+    },
+    "awayTeam": {
+      "id": 63,
+      "name": "富勒姆",
+      "shortName": "Fulham",
+      "tla": "FUL"
+    },
+    "score": {
       "home": null,
       "away": null
     }
   },
   "standings": [
     {
-      "position": null,
+      "position": 1,
+      "team": {
+        "id": 65,
+        "name": "曼城",
+        "shortName": "Man City",
+        "tla": "MCI"
+      },
+      "playedGames": 2,
+      "won": 2,
+      "draw": 0,
+      "lost": 0,
+      "points": 6,
+      "goalsFor": 6,
+      "goalsAgainst": 2,
+      "goalDifference": 4
+    },
+    {
+      "position": 2,
+      "team": {
+        "id": 57,
+        "name": "阿森纳",
+        "shortName": "Arsenal",
+        "tla": "ARS"
+      },
+      "playedGames": 2,
+      "won": 2,
+      "draw": 0,
+      "lost": 0,
+      "points": 6,
+      "goalsFor": 4,
+      "goalsAgainst": 0,
+      "goalDifference": 4
+    },
+    {
+      "position": 3,
+      "team": {
+        "id": 322,
+        "name": "Hull City",
+        "shortName": "Hull City",
+        "tla": "HUL"
+      },
+      "playedGames": 2,
+      "won": 2,
+      "draw": 0,
+      "lost": 0,
+      "points": 6,
+      "goalsFor": 3,
+      "goalsAgainst": 0,
+      "goalDifference": 3
+    },
+    {
+      "position": 4,
+      "team": {
+        "id": 61,
+        "name": "切尔西",
+        "shortName": "Chelsea",
+        "tla": "CHE"
+      },
+      "playedGames": 2,
+      "won": 2,
+      "draw": 0,
+      "lost": 0,
+      "points": 6,
+      "goalsFor": 7,
+      "goalsAgainst": 5,
+      "goalDifference": 2
+    },
+    {
+      "position": 5,
       "team": {
         "id": 64,
         "name": "利物浦",
         "shortName": "Liverpool",
         "tla": "LIV"
       },
-      "playedGames": 2,
-      "won": 0,
+      "playedGames": 3,
+      "won": 1,
       "draw": 2,
       "lost": 0,
-      "points": 2,
-      "goalsFor": 4,
+      "points": 5,
+      "goalsFor": 6,
       "goalsAgainst": 4,
-      "goalDifference": 0
+      "goalDifference": 2
     }
   ]
 }
