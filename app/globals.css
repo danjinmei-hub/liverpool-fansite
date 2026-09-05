@@ -406,8 +406,36 @@ a:focus-visible {
   padding: 24px 26px;
 }
 
-.matchday > article + article {
+.matchday > * + * {
   border-left: 1px solid var(--ink);
+}
+
+.match-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+@media (hover: hover) {
+  .match-card-link:hover {
+    background: #fffdfc;
+    box-shadow: inset 0 -3px 0 var(--red);
+    transform: translateY(-2px);
+  }
+}
+
+.match-card-link:active {
+  background: #f7f2ef;
+  transform: translateY(0);
+}
+
+.match-card-link:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid var(--red);
+  outline-offset: -3px;
 }
 
 .card-topline {
@@ -515,6 +543,15 @@ a:focus-visible {
   gap: 6px 16px;
   font-size: 12px;
   color: #756b68;
+}
+
+.match-centre {
+  margin-left: auto;
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .season-card {
@@ -1751,7 +1788,7 @@ footer > p:nth-child(2) {
     grid-template-columns: 1fr;
   }
 
-  .matchday > article + article,
+  .matchday > * + *,
   .matchday > .season-card {
     border-left: 0;
     border-top: 1px solid var(--ink);

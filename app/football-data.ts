@@ -15,6 +15,7 @@ export type FootballMatch = {
   status: string;
   matchday: number | null;
   venue: string | null;
+  fotmobUrl: string | null;
   homeTeam: FootballTeam;
   awayTeam: FootballTeam;
   score: {

@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarDays } from "lucide-react";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import {
   LIVERPOOL_TEAM_ID,
   isFootballSnapshot,
@@ -56,13 +56,62 @@ function Team({ match, side }: { match: FootballMatch; side: "home" | "away" }) 
   );
 }
 
+function validFotmobUrl(value: string | null) {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" &&
+      url.hostname === "www.fotmob.com" &&
+      url.pathname.startsWith("/matches/")
+      ? url.toString()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function MatchCard({
+  match,
+  className,
+  ariaLabel,
+  children,
+}: {
+  match: FootballMatch;
+  className: string;
+  ariaLabel: string;
+  children: ReactNode;
+}) {
+  const fotmobUrl = validFotmobUrl(match.fotmobUrl);
+
+  if (!fotmobUrl) {
+    return <article className={`match-card ${className}`}>{children}</article>;
+  }
+
+  return (
+    <a
+      className={`match-card match-card-link ${className}`}
+      href={fotmobUrl}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={`${ariaLabel}，在 FotMob 查看比赛详情（新窗口）`}
+    >
+      {children}
+    </a>
+  );
+}
+
 function LastResult({ match }: { match: FootballMatch | null }) {
   if (!match) {
     return <article className="match-card data-unavailable">暂时没有可显示的已结束比赛。</article>;
   }
 
   return (
-    <article className="match-card last-match">
+    <MatchCard
+      match={match}
+      className="last-match"
+      ariaLabel={`${match.homeTeam.name} ${match.score.home ?? "—"} 比 ${match.score.away ?? "—"} ${match.awayTeam.name}`}
+    >
       <div className="card-topline">
         <span>上一场 · {roundLabel(match)}</span>
         <span>FT</span>
@@ -75,8 +124,9 @@ function LastResult({ match }: { match: FootballMatch | null }) {
       <div className="match-meta">
         <span>{kickoffFormatter.format(new Date(match.utcDate))} · 北京时间</span>
         {match.venue && <span>{match.venue}</span>}
+        {validFotmobUrl(match.fotmobUrl) && <span className="match-centre">比赛详情 ↗</span>}
       </div>
-    </article>
+    </MatchCard>
   );
 }
 
@@ -88,7 +138,11 @@ function NextFixture({ match }: { match: FootballMatch | null }) {
   const kickoff = new Date(match.utcDate);
 
   return (
-    <article className="match-card next-match">
+    <MatchCard
+      match={match}
+      className="next-match"
+      ariaLabel={`${match.homeTeam.name} 对 ${match.awayTeam.name}`}
+    >
       <div className="card-topline">
         <span>下一场 · {roundLabel(match)}</span>
         <CalendarDays aria-hidden="true" size={17} />
@@ -111,8 +165,9 @@ function NextFixture({ match }: { match: FootballMatch | null }) {
       <div className="match-meta">
         <span>{kickoffFormatter.format(kickoff)} · 北京时间</span>
         {match.venue && <span>{match.venue}</span>}
+        {validFotmobUrl(match.fotmobUrl) && <span className="match-centre">比赛详情 ↗</span>}
       </div>
-    </article>
+    </MatchCard>
   );
 }
 

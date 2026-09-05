@@ -1,9 +1,10 @@
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 const API_BASE = "https://api.football-data.org/v4";
 const LIVERPOOL_TEAM_ID = 64;
 const OUTPUT_PATH = join(process.cwd(), "public/data/football.json");
+const MATCH_LINKS_PATH = join(process.cwd(), "data/football-match-links.json");
 const API_KEY = process.env.FOOTBALL_DATA_API_KEY;
 
 const TEAM_NAMES_ZH = new Map([
@@ -63,6 +64,24 @@ function team(teamData) {
   };
 }
 
+const matchLinks = JSON.parse(await readFile(MATCH_LINKS_PATH, "utf8"));
+
+function fotmobUrl(matchId) {
+  const value = matchLinks[String(matchId)]?.fotmobUrl ?? null;
+  if (value === null) return null;
+
+  const url = new URL(value);
+  if (
+    url.protocol !== "https:" ||
+    url.hostname !== "www.fotmob.com" ||
+    !url.pathname.startsWith("/matches/")
+  ) {
+    throw new Error(`Invalid FotMob match URL configured for match ${matchId}`);
+  }
+
+  return url.toString();
+}
+
 function match(matchData) {
   return {
     id: matchData.id,
@@ -70,6 +89,7 @@ function match(matchData) {
     status: matchData.status,
     matchday: matchData.matchday ?? null,
     venue: matchData.venue ?? null,
+    fotmobUrl: fotmobUrl(matchData.id),
     homeTeam: team(matchData.homeTeam),
     awayTeam: team(matchData.awayTeam),
     score: {
