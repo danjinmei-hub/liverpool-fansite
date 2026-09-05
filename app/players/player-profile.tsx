@@ -21,6 +21,15 @@ type ProfileSource = {
   href: string;
 };
 
+type EditorialProfileImage = {
+  src: string;
+  alt: string;
+  caption: string;
+  credit: string;
+  creditHref: string;
+  position?: string;
+};
+
 export type PlayerProfileData = {
   slug: string;
   archiveNumber: string;
@@ -57,6 +66,7 @@ export type PlayerProfileData = {
     motif: string;
     points: readonly NumberedProfilePoint[];
   };
+  editorialImages?: readonly EditorialProfileImage[];
   story: {
     overline: string;
     title: readonly string[];
@@ -280,6 +290,28 @@ export function PlayerProfile({ data }: PlayerProfileProps) {
           </div>
         </div>
       </section>
+
+      {data.editorialImages?.length ? (
+        <section className="profile-editorial-images profile-shell" aria-label="人物影像">
+          {data.editorialImages.map((image) => (
+            <figure
+              key={image.src}
+              style={{
+                "--profile-editorial-position": image.position ?? "50% 50%",
+              } as CSSProperties}
+            >
+              <img src={image.src} alt={image.alt} />
+              <figcaption>
+                <span>{image.caption}</span>
+                <a href={image.creditHref} target="_blank" rel="noreferrer">
+                  {image.credit}
+                  <ArrowUpRight aria-hidden="true" size={13} />
+                </a>
+              </figcaption>
+            </figure>
+          ))}
+        </section>
+      ) : null}
 
       <section className="profile-story profile-shell" aria-labelledby="story-title">
         <div className="story-heading">

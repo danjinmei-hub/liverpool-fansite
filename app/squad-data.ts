@@ -117,6 +117,7 @@ export const coreSquad: Player[] = [
     role: "压迫引擎 · 后排冲击",
     group: "中场",
     image: "/players/szoboszlai.jpg",
+    profileHref: "/players/dominik-szoboszlai",
     photoPosition: "50% 13%",
     photoContext: "利物浦到场",
     credit: "Timmy96",
