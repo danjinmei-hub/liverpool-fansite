@@ -6,7 +6,7 @@ import { PlayerCard } from "../player-card";
 import { rotationGroups, rotationSquad } from "../squad-data";
 
 export const metadata: Metadata = {
-  title: "阵容地图｜RED ERA",
+  title: "阵容地图",
   description: "利物浦 2026/27 赛季主要轮换与替补池：真实照片、风格速写与可核验来源。",
 };
 
@@ -21,11 +21,12 @@ export default function SquadPage() {
   return (
     <main className="roster-page" id="top">
       <header className="site-header roster-header">
-        <Link className="brand" href="/" aria-label="返回 RED ERA 首页">
+        <Link className="brand" href="/" aria-label="返回 RED CHORUS 首页">
           <span className="brand-mark" aria-hidden="true">R/26</span>
           <span className="brand-copy">
-            <strong>RED ERA</strong>
-            <small>独立中文球迷档案</small>
+            <strong>RED CHORUS</strong>
+            <small className="brand-zh">红潮同行</small>
+            <small className="brand-tagline">For those who never walk alone.</small>
           </span>
         </Link>
         <Link className="back-link" href="/">
@@ -112,7 +113,11 @@ export default function SquadPage() {
       <footer>
         <div className="brand footer-brand">
           <span className="brand-mark" aria-hidden="true">R/26</span>
-          <span className="brand-copy"><strong>RED ERA</strong><small>Built from the first line.</small></span>
+          <span className="brand-copy">
+            <strong>RED CHORUS</strong>
+            <small className="brand-zh">红潮同行</small>
+            <small className="brand-tagline">For those who never walk alone.</small>
+          </span>
         </div>
         <p>非官方、非商业的独立球迷项目，与 Liverpool FC 无隶属或授权关系。</p>
         <p className="image-credit"><a href="#top">回到顶部</a></p>

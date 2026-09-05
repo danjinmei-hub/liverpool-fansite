@@ -78,8 +78,9 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="回到首页顶部">
           <span className="brand-mark" aria-hidden="true">R/26</span>
           <span className="brand-copy">
-            <strong>RED ERA</strong>
-            <small>独立中文球迷档案</small>
+            <strong>RED CHORUS</strong>
+            <small className="brand-zh">红潮同行</small>
+            <small className="brand-tagline">For those who never walk alone.</small>
           </span>
         </a>
 
@@ -249,7 +250,11 @@ export default function Home() {
       <footer>
         <div className="brand footer-brand">
           <span className="brand-mark" aria-hidden="true">R/26</span>
-          <span className="brand-copy"><strong>RED ERA</strong><small>Built from the first line.</small></span>
+          <span className="brand-copy">
+            <strong>RED CHORUS</strong>
+            <small className="brand-zh">红潮同行</small>
+            <small className="brand-tagline">For those who never walk alone.</small>
+          </span>
         </div>
         <p>非官方、非商业的独立球迷项目，与 Liverpool FC 无隶属或授权关系。</p>
         <p className="image-credit">

@@ -171,6 +171,12 @@ a:focus-visible {
   letter-spacing: 0.05em;
 }
 
+.brand-copy .brand-tagline {
+  margin-top: 2px;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
 .site-header nav {
   display: flex;
   gap: 36px;
@@ -1728,6 +1734,16 @@ footer > p:nth-child(2) {
 
   .brand-copy small {
     display: none;
+  }
+
+  .site-header .brand-copy .brand-zh,
+  footer .brand-copy small {
+    display: block;
+  }
+
+  .site-header .brand-copy .brand-zh {
+    margin-top: 3px;
+    font-size: 10px;
   }
 
   .site-header > .source-link {

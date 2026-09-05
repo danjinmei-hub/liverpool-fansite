@@ -1,6 +1,8 @@
-# RED ERA｜利物浦中文球迷站
+# RED CHORUS｜红潮同行
 
-一个以“安菲尔德比赛日手册 × 现代数据室”为视觉方向的中文利物浦球迷网站。
+For those who never walk alone.
+
+一个面向中文 Liverpool 球迷的独立球迷空间，记录比赛、人物、历史、故事与球迷声音。
 
 当前版本包含：
 

@@ -174,11 +174,12 @@ export function PlayerProfile({ data }: PlayerProfileProps) {
       style={heroPosition}
     >
       <header className="profile-header">
-        <Link className="brand profile-brand" href="/" aria-label="返回 RED ERA 首页">
+        <Link className="brand profile-brand" href="/" aria-label="返回 RED CHORUS 首页">
           <span className="brand-mark" aria-hidden="true">R/26</span>
           <span className="brand-copy">
-            <strong>RED ERA</strong>
-            <small>独立中文球迷档案</small>
+            <strong>RED CHORUS</strong>
+            <small className="brand-zh">红潮同行</small>
+            <small className="brand-tagline">For those who never walk alone.</small>
           </span>
         </Link>
 
@@ -415,7 +416,11 @@ export function PlayerProfile({ data }: PlayerProfileProps) {
       <footer className="profile-footer">
         <Link className="brand footer-brand" href="/">
           <span className="brand-mark" aria-hidden="true">R/26</span>
-          <span className="brand-copy"><strong>RED ERA</strong><small>{archiveLabel}</small></span>
+          <span className="brand-copy">
+            <strong>RED CHORUS</strong>
+            <small className="brand-zh">红潮同行</small>
+            <small className="brand-tagline">For those who never walk alone.</small>
+          </span>
         </Link>
         <p>非官方、非商业的独立球迷项目，与 Liverpool FC 无隶属或授权关系。</p>
         <a href="#top">回到顶部 ↑</a>

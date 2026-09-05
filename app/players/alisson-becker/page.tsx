@@ -8,7 +8,7 @@ const alissonProfile = {
   slug: "alisson-becker",
   archiveNumber: "001",
   seo: {
-    title: "Alisson Becker｜RED ERA 球员档案",
+    title: "Alisson Becker｜球员故事",
     description:
       "阿利松·贝克尔的利物浦人物档案：技术画像、红军意义、决定性瞬间与可核验来源。",
   },
