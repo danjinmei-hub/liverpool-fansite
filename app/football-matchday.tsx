@@ -1,14 +1,14 @@
 "use client";
 
 import { CalendarDays } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode } from "react";
 import { getFotmobLink } from "./fotmob-links";
 import {
   LIVERPOOL_TEAM_ID,
-  isFootballSnapshot,
   type FootballMatch,
   type FootballSnapshot,
 } from "./football-data";
+import { useFootballSnapshot } from "./football-snapshot-provider";
 
 const monthFormatter = new Intl.DateTimeFormat("en-GB", {
   month: "short",
@@ -192,28 +192,8 @@ function Standings({ snapshot }: { snapshot: FootballSnapshot }) {
   );
 }
 
-export function FootballMatchday({ initialData }: { initialData: FootballSnapshot }) {
-  const [snapshot, setSnapshot] = useState(initialData);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function refresh() {
-      try {
-        const result = await fetch("/api/football", {
-          headers: { Accept: "application/json" },
-          signal: controller.signal,
-        });
-        const value: unknown = await result.json();
-        if (result.ok && isFootballSnapshot(value)) setSnapshot(value);
-      } catch {
-        // The rendered fallback remains visible when the snapshot endpoint is unavailable.
-      }
-    }
-
-    void refresh();
-    return () => controller.abort();
-  }, []);
+export function FootballMatchday() {
+  const snapshot = useFootballSnapshot();
 
   return (
     <section className="matchday" id="matchday" aria-label="比赛日概览">

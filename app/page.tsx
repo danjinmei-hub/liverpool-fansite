@@ -10,24 +10,19 @@ import {
 import Link from "next/link";
 import { fallbackFootballSnapshot } from "./football-data";
 import { FootballMatchday } from "./football-matchday";
+import { FootballSnapshotProvider } from "./football-snapshot-provider";
+import { LastDataUpdate, LatestMatchCard, TacticalFreshness } from "./homepage-freshness";
 import { PhotoCredits } from "./photo-credits";
 import { PlayerCard } from "./player-card";
 import { coreSquad } from "./squad-data";
 
-const news = [
+const editorialNews = [
   {
     status: "已确认",
     date: "09.01",
     title: "布拉德利·巴尔科拉加盟利物浦",
     summary: "法国边锋从巴黎圣日耳曼转会而来，成为今夏第四位新援。",
     href: "https://www.liverpoolfc.com/news/liverpool-sign-bradley-barcola-paris-saint-germain",
-  },
-  {
-    status: "比赛报告",
-    date: "08.29",
-    title: "伊萨克、穆尼奥斯破门，红军主场 2–2 战平森林",
-    summary: "连续第二轮两度落后、两度扳平；强度提升发生在下半场。",
-    href: "https://www.liverpoolfc.com/news/isak-and-munoz-score-liverpool-draw-nottingham-forest",
   },
   {
     status: "已确认",
@@ -37,6 +32,8 @@ const news = [
     href: "https://www.liverpoolfc.com/news/harvey-elliott-joins-valencia-loan-2026-27",
   },
 ];
+
+const reviewedThroughMatchday = 2;
 
 const principles = [
   {
@@ -127,7 +124,8 @@ export default function Home() {
         </div>
       </section>
 
-      <FootballMatchday initialData={fallbackFootballSnapshot} />
+      <FootballSnapshotProvider initialData={fallbackFootballSnapshot}>
+        <FootballMatchday />
 
       <section className="section-shell squad-section" id="squad">
         <div className="section-heading">
@@ -164,9 +162,9 @@ export default function Home() {
           <div className="section-heading light">
             <div>
               <span className="section-index">02 / TACTICS</span>
-              <h2>伊劳拉的第一课</h2>
+              <h2>伊劳拉的比赛原则</h2>
             </div>
-            <p>两轮比赛只是早期样本。这里记录原则，不把猜测伪装成结论。</p>
+            <TacticalFreshness reviewedThroughMatchday={reviewedThroughMatchday} />
           </div>
 
           <div className="tactics-layout">
@@ -211,7 +209,8 @@ export default function Home() {
         </div>
 
         <div className="news-grid">
-          {news.map((item) => (
+          <LatestMatchCard />
+          {editorialNews.map((item) => (
             <a href={item.href} target="_blank" rel="noreferrer" className="news-card" key={item.title}>
               <div className="news-meta">
                 <span>{item.status}</span>
@@ -230,9 +229,10 @@ export default function Home() {
             <strong>这座网站的数据承诺</strong>
             <p>官宣、媒体报道与本站分析严格分层；过期内容保留时间戳，不悄悄改写历史。</p>
           </div>
-          <span>LAST CHECKED<br /><b>02 SEP 2026</b></span>
+          <LastDataUpdate />
         </div>
       </section>
+      </FootballSnapshotProvider>
 
       <section className="archive-section" aria-labelledby="archive-title">
         <div className="archive-number" aria-hidden="true">1892</div>
