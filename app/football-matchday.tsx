@@ -92,9 +92,7 @@ function MatchCard({
     <a
       className={`match-card match-card-link ${className}`}
       href={fotmobUrl}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={`${ariaLabel}，在 FotMob 查看比赛详情（新窗口）`}
+      aria-label={`${ariaLabel}，在 FotMob 查看比赛详情`}
     >
       {children}
     </a>
