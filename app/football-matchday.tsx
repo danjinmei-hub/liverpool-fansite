@@ -2,6 +2,7 @@
 
 import { CalendarDays } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
+import { getFotmobLink } from "./fotmob-links";
 import {
   LIVERPOOL_TEAM_ID,
   isFootballSnapshot,
@@ -56,21 +57,6 @@ function Team({ match, side }: { match: FootballMatch; side: "home" | "away" }) 
   );
 }
 
-function validFotmobUrl(value: string | null) {
-  if (!value) return null;
-
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" &&
-      url.hostname === "www.fotmob.com" &&
-      url.pathname.startsWith("/matches/")
-      ? url.toString()
-      : null;
-  } catch {
-    return null;
-  }
-}
-
 function MatchCard({
   match,
   className,
@@ -82,17 +68,17 @@ function MatchCard({
   ariaLabel: string;
   children: ReactNode;
 }) {
-  const fotmobUrl = validFotmobUrl(match.fotmobUrl);
+  const fotmobLink = getFotmobLink(match.id);
 
-  if (!fotmobUrl) {
+  if (!fotmobLink) {
     return <article className={`match-card ${className}`}>{children}</article>;
   }
 
   return (
     <a
       className={`match-card match-card-link ${className}`}
-      href={fotmobUrl}
-      aria-label={`${ariaLabel}，在 FotMob 查看比赛详情`}
+      href={`/out/fotmob/${match.id}`}
+      aria-label={`${ariaLabel}，前往 FotMob 网页入口`}
     >
       {children}
     </a>
@@ -122,7 +108,7 @@ function LastResult({ match }: { match: FootballMatch | null }) {
       <div className="match-meta">
         <span>{kickoffFormatter.format(new Date(match.utcDate))} · 北京时间</span>
         {match.venue && <span>{match.venue}</span>}
-        {validFotmobUrl(match.fotmobUrl) && <span className="match-centre">比赛详情 ↗</span>}
+        {getFotmobLink(match.id) && <span className="match-centre">比赛详情 ↗</span>}
       </div>
     </MatchCard>
   );
@@ -163,7 +149,7 @@ function NextFixture({ match }: { match: FootballMatch | null }) {
       <div className="match-meta">
         <span>{kickoffFormatter.format(kickoff)} · 北京时间</span>
         {match.venue && <span>{match.venue}</span>}
-        {validFotmobUrl(match.fotmobUrl) && <span className="match-centre">比赛详情 ↗</span>}
+        {getFotmobLink(match.id) && <span className="match-centre">比赛详情 ↗</span>}
       </div>
     </MatchCard>
   );
