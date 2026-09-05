@@ -1,6 +1,5 @@
 import {
   ArrowUpRight,
-  CalendarDays,
   CircleDot,
   Clock3,
   Database,
@@ -9,6 +8,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { fallbackFootballSnapshot } from "./football-data";
+import { FootballMatchday } from "./football-matchday";
 import { PhotoCredits } from "./photo-credits";
 import { PlayerCard } from "./player-card";
 import { coreSquad } from "./squad-data";
@@ -111,10 +112,10 @@ export default function Home() {
           </p>
           <div className="freshness">
             <Clock3 aria-hidden="true" size={16} />
-            <span>数据快照</span>
-            <strong>2026.09.02</strong>
+            <span>比赛数据</span>
+            <strong>每 6 小时更新</strong>
             <i aria-hidden="true" />
-            <span>来源已核验</span>
+            <span>保留备用快照</span>
           </div>
         </div>
 
@@ -125,59 +126,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="matchday" id="matchday" aria-label="比赛日概览">
-        <article className="match-card last-match">
-          <div className="card-topline">
-            <span>上一场 · 英超第 2 轮</span>
-            <span>FT</span>
-          </div>
-          <div className="score-row">
-            <div><span className="team-code active">LIV</span><small>利物浦</small></div>
-            <strong>2<span>—</span>2</strong>
-            <div className="away-team"><span className="team-code">NFO</span><small>诺丁汉森林</small></div>
-          </div>
-          <div className="match-meta">
-            <span>伊萨克 60′</span>
-            <span>穆尼奥斯 82′</span>
-            <span>安菲尔德</span>
-          </div>
-        </article>
-
-        <article className="match-card next-match">
-          <div className="card-topline">
-            <span>下一场 · 英超第 3 轮</span>
-            <CalendarDays aria-hidden="true" size={17} />
-          </div>
-          <div className="fixture-row">
-            <div>
-              <strong>IPS</strong>
-              <span>伊普斯维奇</span>
-            </div>
-            <p><b>05</b><span>SEP</span></p>
-            <div className="right">
-              <strong>LIV</strong>
-              <span>利物浦</span>
-            </div>
-          </div>
-          <div className="match-meta">
-            <span>周六 22:00 · 北京时间</span>
-            <span>Portman Road</span>
-          </div>
-        </article>
-
-        <article className="season-card">
-          <div className="card-topline">
-            <span>赛季脉搏</span>
-            <span className="live-dot">进行中</span>
-          </div>
-          <div className="season-numbers">
-            <div><strong>02</strong><span>比赛</span></div>
-            <div><strong>02</strong><span>积分</span></div>
-            <div><strong>4:4</strong><span>进失球</span></div>
-          </div>
-          <p>两场平局，进攻韧性已经出现；如何更早进入强度，是当前最清楚的问题。</p>
-        </article>
-      </section>
+      <FootballMatchday initialData={fallbackFootballSnapshot} />
 
       <section className="section-shell squad-section" id="squad">
         <div className="section-heading">

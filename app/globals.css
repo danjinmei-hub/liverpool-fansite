@@ -457,7 +457,7 @@ a:focus-visible {
 }
 
 .team-code.active,
-.fixture-row .right strong {
+.fixture-row strong.active {
   color: var(--red);
 }
 
@@ -571,6 +571,63 @@ a:focus-visible {
   color: #d1c9c7;
   font-size: 12px;
   line-height: 1.75;
+}
+
+.standings-table {
+  margin: 17px 0 13px;
+  border-top: 1px solid rgba(255,255,255,.18);
+}
+
+.standings-row {
+  min-height: 27px;
+  display: grid;
+  grid-template-columns: 22px minmax(42px, 1fr) 24px 40px 26px;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  color: #a89f9d;
+  font-size: 10px;
+  text-align: right;
+}
+
+.standings-row > :nth-child(2) {
+  text-align: left;
+}
+
+.standings-row strong,
+.standings-row b {
+  color: white;
+}
+
+.standings-row.is-liverpool {
+  color: white;
+  background: rgba(227,27,61,.18);
+}
+
+.standings-row.is-liverpool strong,
+.standings-row.is-liverpool b {
+  color: var(--lime);
+}
+
+.standings-head {
+  min-height: 24px;
+  color: #817a78;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+}
+
+.football-data-status {
+  color: #938b89 !important;
+  font-size: 10px !important;
+}
+
+.data-unavailable {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  color: #756b68;
+  font-size: 13px;
 }
 
 .section-shell {
@@ -1553,6 +1610,10 @@ footer > p:nth-child(2) {
 
   .season-numbers {
     margin: 0;
+  }
+
+  .season-card.standings-card {
+    display: block;
   }
 
   .squad-grid {

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "lastUpdated": "2026-09-02T00:00:00.000Z",
+  "competition": {
+    "code": "PL",
+    "name": "Premier League",
+    "season": 2026,
+    "currentMatchday": 3
+  },
+  "source": {
+    "name": "football-data.org",
+    "url": "https://www.football-data.org/",
+    "mode": "fallback"
+  },
+  "lastResult": {
+    "id": 0,
+    "utcDate": "2026-08-29T14:00:00.000Z",
+    "status": "FINISHED",
+    "matchday": 2,
+    "venue": "Anfield",
+    "homeTeam": {
+      "id": 64,
+      "name": "利物浦",
+      "shortName": "Liverpool",
+      "tla": "LIV"
+    },
+    "awayTeam": {
+      "id": 351,
+      "name": "诺丁汉森林",
+      "shortName": "Nott'm Forest",
+      "tla": "NFO"
+    },
+    "score": {
+      "home": 2,
+      "away": 2
+    }
+  },
+  "nextFixture": {
+    "id": 0,
+    "utcDate": "2026-09-05T14:00:00.000Z",
+    "status": "SCHEDULED",
+    "matchday": 3,
+    "venue": "Portman Road",
+    "homeTeam": {
+      "id": 349,
+      "name": "伊普斯维奇",
+      "shortName": "Ipswich Town",
+      "tla": "IPS"
+    },
+    "awayTeam": {
+      "id": 64,
+      "name": "利物浦",
+      "shortName": "Liverpool",
+      "tla": "LIV"
+    },
+    "score": {
+      "home": null,
+      "away": null
+    }
+  },
+  "standings": [
+    {
+      "position": null,
+      "team": {
+        "id": 64,
+        "name": "利物浦",
+        "shortName": "Liverpool",
+        "tla": "LIV"
+      },
+      "playedGames": 2,
+      "won": 0,
+      "draw": 2,
+      "lost": 0,
+      "points": 2,
+      "goalsFor": 4,
+      "goalsAgainst": 4,
+      "goalDifference": 0
+    }
+  ]
+}
