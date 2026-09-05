@@ -418,6 +418,13 @@ a:focus-visible {
   transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
+.match-card-shell { min-width: 0; display: flex; flex-direction: column; background: var(--white); }
+.match-card-shell > .match-card-link { flex: 1; }
+.match-web-fallback { align-self: flex-end; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; color: #69605d; font-size: 12px; text-underline-offset: 3px; }
+.match-web-fallback:hover { color: var(--red); text-decoration: underline; }
+.match-web-fallback:active { opacity: .7; }
+.match-web-fallback:focus-visible { outline: 2px solid var(--red); outline-offset: -3px; }
+
 @media (hover: hover) {
   .match-card-link:hover {
     background: #fffdfc;

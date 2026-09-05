@@ -75,13 +75,16 @@ function MatchCard({
   }
 
   return (
+    <div className="match-card-shell">
     <a
       className={`match-card match-card-link ${className}`}
-      href={`/out/fotmob/${match.id}`}
-      aria-label={`${ariaLabel}，前往 FotMob 网页入口`}
+      href={fotmobLink.fotmobUrl}
+      aria-label={`${ariaLabel}，在 FotMob 查看比赛详情`}
     >
       {children}
     </a>
+    <a className="match-web-fallback" href={`/out/fotmob/${match.id}`} aria-label={`${ariaLabel}，网页打开失败？`}>网页打开失败？</a>
+    </div>
   );
 }
 
