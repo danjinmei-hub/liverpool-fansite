@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarDays } from "lucide-react";
+import { ArrowUpRight, CalendarDays } from "lucide-react";
+import Link from "next/link";
 import { type ReactNode } from "react";
 import { getFotmobLink } from "./fotmob-links";
 import {
@@ -196,10 +197,18 @@ export function FootballMatchday() {
   const snapshot = useFootballSnapshot();
 
   return (
-    <section className="matchday" id="matchday" aria-label="比赛日概览">
-      <LastResult match={snapshot.lastResult} />
-      <NextFixture match={snapshot.nextFixture} />
-      <Standings snapshot={snapshot} />
-    </section>
+    <>
+      <section className="matchday" id="matchday" aria-label="比赛日概览">
+        <LastResult match={snapshot.lastResult} />
+        <NextFixture match={snapshot.nextFixture} />
+        <Standings snapshot={snapshot} />
+      </section>
+      <div className="season-archive-entry">
+        <span>2026 / 27 · CURRENT SEASON</span>
+        <Link href="/matches">
+          查看本赛季全部比赛 <ArrowUpRight aria-hidden="true" size={15} />
+        </Link>
+      </div>
+    </>
   );
 }

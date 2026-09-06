@@ -90,6 +90,11 @@ function match(matchData) {
     matchday: matchData.matchday ?? null,
     venue: matchData.venue ?? null,
     fotmobUrl: fotmobUrl(matchData.id),
+    competition: {
+      code: matchData.competition?.code ?? null,
+      name: matchData.competition?.name ?? "赛事待确认",
+    },
+    stage: matchData.stage ?? null,
     homeTeam: team(matchData.homeTeam),
     awayTeam: team(matchData.awayTeam),
     score: {
@@ -122,10 +127,13 @@ function selectStandings(rows) {
     : topFive;
 }
 
-const [matchesPayload, standingsPayload] = await Promise.all([
-  fetchResource("/competitions/PL/matches"),
-  fetchResource("/competitions/PL/standings"),
-]);
+const standingsPayload = await fetchResource("/competitions/PL/standings");
+const season = Number(standingsPayload.season?.startDate?.slice(0, 4));
+if (!season) throw new Error("Premier League season start year is unavailable");
+
+const matchesPayload = await fetchResource(
+  `/teams/${LIVERPOOL_TEAM_ID}/matches?season=${season}`,
+);
 
 const liverpoolMatches = matchesPayload.matches
   .filter(
@@ -134,11 +142,15 @@ const liverpoolMatches = matchesPayload.matches
   )
   .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
 
+const premierLeagueMatches = liverpoolMatches.filter(
+  (item) => item.competition?.code === "PL",
+);
+
 const now = Date.now();
-const finished = liverpoolMatches.filter(
+const finished = premierLeagueMatches.filter(
   (item) => ["FINISHED", "AWARDED"].includes(item.status) && new Date(item.utcDate).getTime() <= now,
 );
-const upcoming = liverpoolMatches.filter(
+const upcoming = premierLeagueMatches.filter(
   (item) => ["SCHEDULED", "TIMED"].includes(item.status) && new Date(item.utcDate).getTime() > now,
 );
 
@@ -152,7 +164,7 @@ const snapshot = {
   competition: {
     code: "PL",
     name: standingsPayload.competition?.name ?? "Premier League",
-    season: Number(standingsPayload.season?.startDate?.slice(0, 4)) || new Date().getUTCFullYear(),
+    season,
     currentMatchday: standingsPayload.season?.currentMatchday ?? null,
   },
   source: {
@@ -162,6 +174,7 @@ const snapshot = {
   },
   lastResult: finished.length ? match(finished.at(-1)) : null,
   nextFixture: upcoming.length ? match(upcoming[0]) : null,
+  matches: liverpoolMatches.map(match),
   standings: selectStandings(allStandings),
 };
 
@@ -171,5 +184,5 @@ await writeFile(temporaryPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8")
 await rename(temporaryPath, OUTPUT_PATH);
 
 console.log(
-  `Updated football snapshot: ${snapshot.lastResult?.id ?? "no result"}, ${snapshot.nextFixture?.id ?? "no fixture"}, ${snapshot.standings.length} table rows`,
+  `Updated football snapshot: ${snapshot.matches.length} season matches, ${snapshot.lastResult?.id ?? "no result"}, ${snapshot.nextFixture?.id ?? "no fixture"}, ${snapshot.standings.length} table rows`,
 );

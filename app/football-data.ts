@@ -16,6 +16,11 @@ export type FootballMatch = {
   matchday: number | null;
   venue: string | null;
   fotmobUrl: string | null;
+  competition?: {
+    code: string | null;
+    name: string;
+  };
+  stage?: string | null;
   homeTeam: FootballTeam;
   awayTeam: FootballTeam;
   score: {
@@ -53,6 +58,7 @@ export type FootballSnapshot = {
   };
   lastResult: FootballMatch | null;
   nextFixture: FootballMatch | null;
+  matches?: FootballMatch[];
   standings: StandingRow[];
 };
 
@@ -67,6 +73,19 @@ export function isFootballSnapshot(value: unknown): value is FootballSnapshot {
     typeof snapshot.lastUpdated === "string" &&
     snapshot.competition?.code === "PL" &&
     snapshot.source?.name === "football-data.org" &&
+    (snapshot.matches === undefined || Array.isArray(snapshot.matches)) &&
     Array.isArray(snapshot.standings)
+  );
+}
+
+export function getSeasonMatches(snapshot: FootballSnapshot) {
+  const matches = snapshot.matches?.length
+    ? snapshot.matches
+    : [snapshot.lastResult, snapshot.nextFixture].filter(
+        (match): match is FootballMatch => match !== null,
+      );
+
+  return [...new Map(matches.map((match) => [match.id, match])).values()].sort(
+    (a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime(),
   );
 }

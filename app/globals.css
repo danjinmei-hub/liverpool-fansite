@@ -405,6 +405,34 @@ a:focus-visible {
   box-shadow: 0 20px 46px rgba(30, 0, 8, 0.13);
 }
 
+.season-archive-entry {
+  width: min(100% - 88px, 1320px);
+  margin: 0 auto;
+  padding: 16px 2px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: #756b68;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.season-archive-entry a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--red);
+  letter-spacing: 0.04em;
+}
+
+.season-archive-entry a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .match-card,
 .season-card {
   min-width: 0;
@@ -1850,6 +1878,14 @@ footer > p:nth-child(2) {
     width: min(100% - 44px, 1320px);
     margin-top: -22px;
     grid-template-columns: 1fr;
+  }
+
+  .season-archive-entry {
+    width: min(100% - 44px, 1320px);
+    padding-top: 12px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .matchday > * + *,
