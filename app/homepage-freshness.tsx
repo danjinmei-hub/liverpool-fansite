@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { getFotmobLink } from "./fotmob-links";
+import Link from "next/link";
 import { LIVERPOOL_TEAM_ID, type FootballMatch, type FootballSnapshot } from "./football-data";
 import { useFootballSnapshot } from "./football-snapshot-provider";
 
@@ -75,7 +75,6 @@ export function LatestMatchCard() {
     );
   }
 
-  const link = getFotmobLink(lastResult.id);
   const date = matchDate(new Date(lastResult.utcDate));
   const summary = [
     "Premier League",
@@ -91,24 +90,19 @@ export function LatestMatchCard() {
       <h3>{matchTitle(lastResult)}</h3>
       <p>{summary}</p>
       <div className="read-more">
-        {link ? "查看比赛详情" : "比赛数据"}
-        {link && <ArrowUpRight aria-hidden="true" size={16} />}
+        查看比赛详情 <ArrowUpRight aria-hidden="true" size={16} />
       </div>
     </>
   );
 
-  if (!link) {
-    return <article className="news-card news-card-static latest-match-update">{contents}</article>;
-  }
-
   return (
-    <a
+    <Link
       className="news-card latest-match-update"
-      href={link.fotmobUrl}
+      href={`/matches/${lastResult.id}`}
       aria-label={`${matchTitle(lastResult)}，查看比赛详情`}
     >
       {contents}
-    </a>
+    </Link>
   );
 }
 

@@ -31,6 +31,7 @@ test("renders homepage freshness fields from the football snapshot", async () =>
   assert.ok(liverpool);
   assert.ok(textHtml.includes("LATEST MATCH"));
   assert.ok(textHtml.includes(`${result.homeTeam.name} ${result.score.home}—${result.score.away} ${result.awayTeam.name}`));
+  assert.ok(textHtml.includes(`href="/matches/${result.id}"`));
   assert.ok(textHtml.includes(`前 ${liverpool.playedGames} 轮仍是早期样本`));
   assert.ok(textHtml.includes("TACTICAL REVIEW · THROUGH MD 02"));
   assert.ok(textHtml.includes("LAST DATA UPDATE"));
