@@ -16,7 +16,7 @@ const vanDijkProfile = {
     kicker: "DEFENDER · CAPTAIN · LIVERPOOL",
     name: ["VIRGIL", "VAN DIJK"],
     statementNumber: "04",
-    statement: "他让利物浦的标准，有了可以看见的样子。",
+    statement: "他让利物浦该是什么样子，变得清晰。",
     footerStatement: "冷静让他看清危险。纪律让这种判断，一场接一场地出现。",
     image: {
       src: "/players/van-dijk.jpg",
@@ -94,10 +94,10 @@ const vanDijkProfile = {
   ],
   story: {
     overline: "红军故事",
-    title: ["标准先落在自己身上。", "然后传向整支球队。"],
+    title: ["要求先落在自己身上。", "然后传向整支球队。"],
     thesisLabel: "THE STANDARD",
     thesis:
-      "范戴克给 Liverpool 的标准，先从每天如何准备开始，再落到每一次站位、每一句提醒和每个三四天后的比赛夜。",
+      "范戴克每天从准备开始，再把纪律带进每一次站位、每一句提醒和每个三四天后的比赛夜。",
     context:
       "恢复、饮食、训练与身体管理，让判断长期保持清晰。队长袖标又把这份要求推向更衣室：困难时让人靠近，年轻球员需要方向时先给出尺度。",
     arguments: [
@@ -109,9 +109,9 @@ const vanDijkProfile = {
       },
       {
         number: "02",
-        label: "STANDARD",
-        title: "标准首先落在自己身上",
-        text: "谈到长期稳定，他的答案很短：“Discipline, discipline and discipline!” 恢复、饮食、生活方式、理疗和瑜伽，组成每周重复的准备。2025/26 赛季，他踢满 Liverpool 的每一分钟联赛；持续出场，让标准从一句要求变成日常可见的样子。",
+        label: "DISCIPLINE",
+        title: "要求首先落在自己身上",
+        text: "谈到长期稳定，他的答案很短：“Discipline, discipline and discipline!” 恢复、饮食、生活方式、理疗和瑜伽，组成每周重复的准备。2025/26 赛季，他踢满 Liverpool 的每一分钟联赛；持续出场，让这些习惯在每个比赛日得到验证。",
       },
       {
         number: "03",
@@ -122,7 +122,7 @@ const vanDijkProfile = {
     ],
     coda: {
       lead: "2025 年，他在安菲尔德举起联赛奖杯。",
-      emphasis: "那一刻，标准有了人人看得见的形状。",
+      emphasis: "那一刻，多年的纪律与责任有了人人看得见的形状。",
     },
     voice: {
       quote: "“I really enjoy the fact of feeling that responsibility.”",
@@ -150,7 +150,7 @@ const vanDijkProfile = {
   },
   beyondShirt: {
     overline: "球衣之外",
-    title: ["标准也会回到，", "一切开始的地方。"],
+    title: ["职业生涯走得再远，", "也会回到开始的地方。"],
     quote: "“Willem II 在我的人生与成长中扮演了重要角色。”",
     quoteAttribution: "— VIRGIL VAN DIJK · 2025",
     body: [
