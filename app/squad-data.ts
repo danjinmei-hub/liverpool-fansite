@@ -62,6 +62,7 @@ export const coreSquad: Player[] = [
     credit: "Timmy96",
     license: licenses.cc0,
     source: "https://commons.wikimedia.org/wiki/File:Virgil_van_Dijk_06042025_(2).jpg",
+    profileHref: "/players/virgil-van-dijk",
   },
   {
     slug: "milos-kerkez",
