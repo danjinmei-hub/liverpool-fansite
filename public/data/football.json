@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-11T12:30:37.419Z",
+  "lastUpdated": "2026-09-11T18:27:20.697Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -711,7 +711,7 @@
     },
     {
       "id": 560710,
-      "utcDate": "2026-12-26T15:00:00Z",
+      "utcDate": "2026-12-26T17:30:00Z",
       "status": "TIMED",
       "matchday": 17,
       "venue": null,
@@ -740,7 +740,7 @@
     },
     {
       "id": 560714,
-      "utcDate": "2026-12-30T20:00:00Z",
+      "utcDate": "2026-12-30T20:15:00Z",
       "status": "TIMED",
       "matchday": 18,
       "venue": null,
@@ -798,7 +798,7 @@
     },
     {
       "id": 560739,
-      "utcDate": "2027-01-06T20:00:00Z",
+      "utcDate": "2027-01-05T20:15:00Z",
       "status": "TIMED",
       "matchday": 20,
       "venue": null,
