@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-12T12:27:28.572Z",
+  "lastUpdated": "2026-09-12T18:24:54.450Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -13,38 +13,9 @@
     "mode": "api"
   },
   "lastResult": {
-    "id": 560566,
-    "utcDate": "2026-09-04T19:00:00Z",
-    "status": "FINISHED",
-    "matchday": 3,
-    "venue": null,
-    "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-ipswich-town/2ugv0q",
-    "competition": {
-      "code": "PL",
-      "name": "Premier League"
-    },
-    "stage": "REGULAR_SEASON",
-    "homeTeam": {
-      "id": 349,
-      "name": "伊普斯维奇",
-      "shortName": "Ipswich Town",
-      "tla": "IPS"
-    },
-    "awayTeam": {
-      "id": 64,
-      "name": "利物浦",
-      "shortName": "Liverpool",
-      "tla": "LIV"
-    },
-    "score": {
-      "home": 0,
-      "away": 2
-    }
-  },
-  "nextFixture": {
     "id": 560573,
     "utcDate": "2026-09-12T14:00:00Z",
-    "status": "TIMED",
+    "status": "FINISHED",
     "matchday": 4,
     "venue": null,
     "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-fulham/2u7pyg",
@@ -64,6 +35,35 @@
       "name": "富勒姆",
       "shortName": "Fulham",
       "tla": "FUL"
+    },
+    "score": {
+      "home": 0,
+      "away": 0
+    }
+  },
+  "nextFixture": {
+    "id": 560582,
+    "utcDate": "2026-09-20T13:00:00Z",
+    "status": "TIMED",
+    "matchday": 5,
+    "venue": null,
+    "fotmobUrl": null,
+    "competition": {
+      "code": "PL",
+      "name": "Premier League"
+    },
+    "stage": "REGULAR_SEASON",
+    "homeTeam": {
+      "id": 1044,
+      "name": "伯恩茅斯",
+      "shortName": "Bournemouth",
+      "tla": "BOU"
+    },
+    "awayTeam": {
+      "id": 64,
+      "name": "利物浦",
+      "shortName": "Liverpool",
+      "tla": "LIV"
     },
     "score": {
       "home": null,
@@ -190,7 +190,7 @@
     {
       "id": 560573,
       "utcDate": "2026-09-12T14:00:00Z",
-      "status": "TIMED",
+      "status": "FINISHED",
       "matchday": 4,
       "venue": null,
       "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-fulham/2u7pyg",
@@ -212,8 +212,8 @@
         "tla": "FUL"
       },
       "score": {
-        "home": null,
-        "away": null
+        "home": 0,
+        "away": 0
       }
     },
     {
@@ -1449,13 +1449,13 @@
         "shortName": "Hull City",
         "tla": "HUL"
       },
-      "playedGames": 3,
+      "playedGames": 4,
       "won": 2,
-      "draw": 1,
+      "draw": 2,
       "lost": 0,
-      "points": 7,
-      "goalsFor": 3,
-      "goalsAgainst": 0,
+      "points": 8,
+      "goalsFor": 5,
+      "goalsAgainst": 2,
       "goalDifference": 3
     },
     {
@@ -1466,13 +1466,13 @@
         "shortName": "Chelsea",
         "tla": "CHE"
       },
-      "playedGames": 3,
+      "playedGames": 4,
       "won": 2,
-      "draw": 0,
+      "draw": 1,
       "lost": 1,
-      "points": 6,
-      "goalsFor": 8,
-      "goalsAgainst": 7,
+      "points": 7,
+      "goalsFor": 10,
+      "goalsAgainst": 9,
       "goalDifference": 1
     },
     {
@@ -1483,13 +1483,13 @@
         "shortName": "Brentford",
         "tla": "BRE"
       },
-      "playedGames": 3,
+      "playedGames": 4,
       "won": 1,
-      "draw": 2,
+      "draw": 3,
       "lost": 0,
-      "points": 5,
-      "goalsFor": 5,
-      "goalsAgainst": 2,
+      "points": 6,
+      "goalsFor": 7,
+      "goalsAgainst": 4,
       "goalDifference": 3
     },
     {
@@ -1500,11 +1500,11 @@
         "shortName": "Liverpool",
         "tla": "LIV"
       },
-      "playedGames": 3,
+      "playedGames": 4,
       "won": 1,
-      "draw": 2,
+      "draw": 3,
       "lost": 0,
-      "points": 5,
+      "points": 6,
       "goalsFor": 6,
       "goalsAgainst": 4,
       "goalDifference": 2
