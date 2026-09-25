@@ -26,7 +26,7 @@ test("production export serves complete routes and assets from files only", asyn
   for (const match of snapshot.matches.filter((item) => !matches.includes(item))) {
     assert.equal((await fetch(`${base}/matches/${match.id}/`)).status, 404);
   }
-  const pages = ["/", "/squad", "/players/alisson-becker", "/players/dominik-szoboszlai",
+  const pages = ["/", "/squad", "/history", "/players/alisson-becker", "/players/dominik-szoboszlai",
     "/players/virgil-van-dijk", "/matches", ...matches.map((match) => `/matches/${match.id}`),
     ...Object.keys(links).map((id) => `/out/fotmob/${id}`)];
   const assetPaths = new Set();
@@ -51,6 +51,10 @@ test("production export serves complete routes and assets from files only", asyn
       const update = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Shanghai" })
         .format(new Date(snapshot.lastUpdated)).toUpperCase();
       assert.ok(html.includes(update));
+    }
+    if (page === "/history") {
+      assert.match(html, /伊斯坦布尔奇迹/);
+      assert.match(html, /<canvas/);
     }
     if (page === "/matches") {
       for (const match of matches) assert.ok(html.includes(`/matches/${match.id}`));

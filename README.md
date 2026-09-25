@@ -12,6 +12,7 @@ For those who never walk alone.
 - 主教练 Andoni Iraola 的战术观察
 - 经官方来源核验的球队动态
 - 历史球员档案入口设计
+- 40 秒 Canvas 动画红军史（`/history`）
 
 ## 本地运行
 
