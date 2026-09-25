@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-24T21:28:47.274Z",
+  "lastUpdated": "2026-09-25T04:53:48.597Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -159,35 +159,6 @@
       }
     },
     {
-      "id": 575331,
-      "utcDate": "2026-09-09T19:00:00Z",
-      "status": "FINISHED",
-      "matchday": 1,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "awayTeam": {
-        "id": 78,
-        "name": "Atleti",
-        "shortName": "Atleti",
-        "tla": "ATL"
-      },
-      "score": {
-        "home": 2,
-        "away": 1
-      }
-    },
-    {
       "id": 560573,
       "utcDate": "2026-09-12T14:00:00Z",
       "status": "FINISHED",
@@ -275,35 +246,6 @@
       }
     },
     {
-      "id": 575350,
-      "utcDate": "2026-10-14T16:45:00Z",
-      "status": "TIMED",
-      "matchday": 2,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 2016,
-        "name": "LASK",
-        "shortName": "LASK",
-        "tla": "LIN"
-      },
-      "awayTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
       "id": 560611,
       "utcDate": "2026-10-17T14:00:00Z",
       "status": "TIMED",
@@ -326,35 +268,6 @@
         "name": "利物浦",
         "shortName": "Liverpool",
         "tla": "LIV"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
-      "id": 575363,
-      "utcDate": "2026-10-20T19:00:00Z",
-      "status": "TIMED",
-      "matchday": 3,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "awayTeam": {
-        "id": 94,
-        "name": "Villarreal",
-        "shortName": "Villarreal",
-        "tla": "VIL"
       },
       "score": {
         "home": null,
@@ -420,35 +333,6 @@
       }
     },
     {
-      "id": 575387,
-      "utcDate": "2026-11-04T17:45:00Z",
-      "status": "TIMED",
-      "matchday": 4,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 613,
-        "name": "Fenerbahçe",
-        "shortName": "Fenerbahçe",
-        "tla": "FEN"
-      },
-      "awayTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
       "id": 560635,
       "utcDate": "2026-11-08T14:00:00Z",
       "status": "TIMED",
@@ -500,35 +384,6 @@
         "name": "曼联",
         "shortName": "Man United",
         "tla": "MUN"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
-      "id": 575409,
-      "utcDate": "2026-11-25T20:00:00Z",
-      "status": "TIMED",
-      "matchday": 5,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 851,
-        "name": "Club Brugge",
-        "shortName": "Club Brugge",
-        "tla": "BRU"
-      },
-      "awayTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
       },
       "score": {
         "home": null,
@@ -616,35 +471,6 @@
         "name": "利物浦",
         "shortName": "Liverpool",
         "tla": "LIV"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
-      "id": 575295,
-      "utcDate": "2026-12-09T20:00:00Z",
-      "status": "TIMED",
-      "matchday": 6,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "awayTeam": {
-        "id": 503,
-        "name": "Porto",
-        "shortName": "Porto",
-        "tla": "FCP"
       },
       "score": {
         "home": null,
@@ -855,35 +681,6 @@
       }
     },
     {
-      "id": 575285,
-      "utcDate": "2027-01-19T20:00:00Z",
-      "status": "TIMED",
-      "matchday": 7,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 108,
-        "name": "Inter",
-        "shortName": "Inter",
-        "tla": "INT"
-      },
-      "awayTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
       "id": 560759,
       "utcDate": "2027-01-23T15:00:00Z",
       "status": "TIMED",
@@ -906,35 +703,6 @@
         "name": "利物浦",
         "shortName": "Liverpool",
         "tla": "LIV"
-      },
-      "score": {
-        "home": null,
-        "away": null
-      }
-    },
-    {
-      "id": 575296,
-      "utcDate": "2027-01-27T20:00:00Z",
-      "status": "TIMED",
-      "matchday": 8,
-      "venue": null,
-      "fotmobUrl": null,
-      "competition": {
-        "code": "CL",
-        "name": "UEFA Champions League"
-      },
-      "stage": "LEAGUE_STAGE",
-      "homeTeam": {
-        "id": 64,
-        "name": "利物浦",
-        "shortName": "Liverpool",
-        "tla": "LIV"
-      },
-      "awayTeam": {
-        "id": 546,
-        "name": "RC Lens",
-        "shortName": "RC Lens",
-        "tla": "RCL"
       },
       "score": {
         "home": null,
