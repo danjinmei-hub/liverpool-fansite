@@ -14,6 +14,22 @@ if [[ -z "${OSS_ACCESS_KEY_ID:-}" || -z "${OSS_ACCESS_KEY_SECRET:-}" ]]; then
   echo "OSS upload credentials are missing." >&2
   exit 1
 fi
+# Pasting a key into GitHub Secrets can include a trailing newline. Keep the
+# key itself intact; reject whitespace inside it rather than guessing a value.
+trim_credential() {
+  local value="$1"
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s' "$value"
+}
+OSS_ACCESS_KEY_ID=$(trim_credential "$OSS_ACCESS_KEY_ID")
+OSS_ACCESS_KEY_SECRET=$(trim_credential "$OSS_ACCESS_KEY_SECRET")
+if [[ -z "$OSS_ACCESS_KEY_ID" || -z "$OSS_ACCESS_KEY_SECRET" ||
+      "$OSS_ACCESS_KEY_ID" == *[[:space:]]* || "$OSS_ACCESS_KEY_SECRET" == *[[:space:]]* ]]; then
+  echo "OSS credentials have invalid whitespace; update the GitHub Secrets." >&2
+  exit 1
+fi
+export OSS_ACCESS_KEY_ID OSS_ACCESS_KEY_SECRET
 export OSS_ENDPOINT=https://oss-cn-hongkong.aliyuncs.com
 export OSS_REGION=cn-hongkong
 
