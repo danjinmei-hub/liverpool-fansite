@@ -55,6 +55,7 @@ test("production export serves complete routes and assets from files only", asyn
     if (page === "/history") {
       assert.match(html, /伊斯坦布尔奇迹/);
       assert.match(html, /<canvas/);
+      assert.match(html, /开启音乐/);
     }
     if (page === "/matches") {
       for (const match of matches) assert.ok(html.includes(`/matches/${match.id}`));

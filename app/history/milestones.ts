@@ -67,3 +67,6 @@ export const milestones: Milestone[] = [
     duration: 4,
   },
 ];
+
+export const sceneStarts = milestones.map((_, i) => milestones.slice(0, i).reduce((sum, m) => sum + m.duration, 0));
+export const totalDuration = milestones.reduce((sum, m) => sum + m.duration, 0);

@@ -39,7 +39,8 @@ export default function HistoryPage() {
         </div>
         <p>
           从安菲尔德的第一座看台，到伊斯坦布尔的六分钟，再到第 20 座联赛冠军。
-          这段动画完全由 JavaScript 在 Canvas 上实时绘制，点击年份可以直接跳转。
+          画面由 JavaScript 在 Canvas 上实时绘制，配乐由 Web Audio 实时合成：
+          点「音乐」开启声音，点年份可以直接跳转。
         </p>
       </section>
 
