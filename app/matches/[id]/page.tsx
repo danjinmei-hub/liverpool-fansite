@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { getSeasonMatches } from "../../football-data";
+import { fallbackFootballSnapshot, getSeasonMatches } from "../../football-data";
 import { getLatestFootballSnapshot } from "../../football-source";
 import { getFotmobLink } from "../../fotmob-links";
 import {
@@ -19,6 +19,10 @@ export const metadata = {
 };
 
 export const revalidate = 900;
+
+export function generateStaticParams() {
+  return getSeasonMatches(fallbackFootballSnapshot).map((match) => ({ id: String(match.id) }));
+}
 
 export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

@@ -486,7 +486,7 @@
   }
 
   .detailTeams div > strong {
-    font-size: clamp(50px, 18vw, 76px);
+    font-size: clamp(32px, 10vw, 64px);
   }
 
   .detailTeams h1 {

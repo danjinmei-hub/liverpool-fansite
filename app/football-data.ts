@@ -85,7 +85,18 @@ export function getSeasonMatches(snapshot: FootballSnapshot) {
         (match): match is FootballMatch => match !== null,
       );
 
-  return [...new Map(matches.map((match) => [match.id, match])).values()].sort(
+  const seasonStart = Date.UTC(snapshot.competition.season, 6, 1);
+  const seasonEnd = Date.UTC(snapshot.competition.season + 1, 6, 1);
+  // Older snapshots contain European fixtures too. Apply the archive's scope
+  // here so listing, detail lookup and static params always agree.
+  const leagueMatches = matches.filter((match) => {
+    const date = new Date(match.utcDate).getTime();
+    return match.competition?.code === "PL"
+      && (match.homeTeam.id === LIVERPOOL_TEAM_ID || match.awayTeam.id === LIVERPOOL_TEAM_ID)
+      && date >= seasonStart && date < seasonEnd;
+  });
+
+  return [...new Map(leagueMatches.map((match) => [match.id, match])).values()].sort(
     (a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime(),
   );
 }

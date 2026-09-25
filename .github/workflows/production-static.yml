@@ -1,0 +1,51 @@
+name: Build production static site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # The data bot uses GITHUB_TOKEN: its push does not trigger another push workflow.
+  workflow_run:
+    workflows: ["Update football data"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-static-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name != 'workflow_run' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # workflow_run.head_sha is the pre-update revision, not the bot's new commit.
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:static
+      - run: npm run test:static
+      - name: Record exact source revision
+        run: git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: red-chorus-static-${{ github.run_id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 7
+      # No cloud upload in this readiness phase. A reviewed OSS upload step can
+      # consume this same validated out/; see docs/oss-production.md.

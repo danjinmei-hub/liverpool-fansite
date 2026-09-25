@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getFotmobLink } from "../../../fotmob-links";
 import CopyLink from "./copy-link";
 import styles from "./page.module.css";
+import links from "../../../../data/football-match-links.json";
+
+export function generateStaticParams() {
+  return Object.keys(links).filter((id) => getFotmobLink(id)).map((id) => ({ id }));
+}
 
 export const metadata = {
   title: "比赛详情 · Liverpool Fan Site",
@@ -15,7 +21,7 @@ export default async function FotmobPage({ params }: { params: Promise<{ id: str
 
   return (
     <main className={styles.page}>
-      <a className={styles.back} href="/">← 返回 Liverpool Fan Site</a>
+      <Link className={styles.back} href="/">← 返回 Liverpool Fan Site</Link>
       <h1>{match.matchLabel}</h1>
       <section className={styles.details} aria-label="FotMob 网页入口">
         <a className={styles.destination} href={match.fotmobUrl}>在 FotMob 网页查看比赛详情 ↗</a>

@@ -174,7 +174,7 @@ const snapshot = {
   },
   lastResult: finished.length ? match(finished.at(-1)) : null,
   nextFixture: upcoming.length ? match(upcoming[0]) : null,
-  matches: liverpoolMatches.map(match),
+  matches: premierLeagueMatches.map(match),
   standings: selectStandings(allStandings),
 };
 

@@ -19,7 +19,10 @@ export function FootballSnapshotProvider({
 
     async function refresh() {
       try {
-        const result = await fetch("/api/football", {
+        const result = await fetch(process.env.NEXT_PUBLIC_STATIC_PRODUCTION === "1"
+          ? "/data/football.json"
+          : "/api/football", {
+          cache: "no-store",
           headers: { Accept: "application/json" },
           signal: controller.signal,
         });

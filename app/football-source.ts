@@ -8,6 +8,9 @@ const REMOTE_SNAPSHOT_URL =
   "https://raw.githubusercontent.com/danjinmei-hub/liverpool-fansite/main/public/data/football.json";
 
 export async function getLatestFootballSnapshot(): Promise<FootballSnapshot> {
+  // One commit, one snapshot: the static build must never mix in a newer remote file.
+  if (process.env.NEXT_PUBLIC_STATIC_PRODUCTION === "1") return fallbackFootballSnapshot;
+
   try {
     const remote = await fetch(REMOTE_SNAPSHOT_URL, {
       headers: { Accept: "application/json" },
