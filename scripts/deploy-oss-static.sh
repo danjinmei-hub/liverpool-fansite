@@ -18,7 +18,7 @@ export OSS_ENDPOINT=https://oss-cn-hongkong.aliyuncs.com
 export OSS_REGION=cn-hongkong
 
 site_dir="${1:-out}"
-for required in index.html matches/index.html data/football.json; do
+for required in index.html 404.html matches/index.html data/football.json; do
   if [[ ! -f "$site_dir/$required" ]]; then
     echo "Static output is incomplete: $required" >&2
     exit 1
@@ -28,6 +28,11 @@ done
 destination="oss://$OSS_BUCKET/"
 staging=$(mktemp -d)
 trap 'rm -rf "$staging"' EXIT
+
+# A single-object upload reports OSS errors directly. Batch uploads only write
+# detailed failures to a temporary report, which is lost with the runner.
+ossutil cp "$site_dir/404.html" "${destination}404.html" \
+  -f --no-progress --cache-control 'no-cache' --content-type 'text/html; charset=utf-8'
 
 # Publish hashed assets before pages which can reference them. Old assets remain
 # available to previously opened tabs; this workflow never deletes bucket objects.
