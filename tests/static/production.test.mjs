@@ -3,6 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { once } from "node:events";
 import { resolve } from "node:path";
 import test from "node:test";
+import { footballSnapshotError } from "../../lib/football-snapshot.mjs";
+import { assertHomepageSnapshot } from "../helpers/football-render-assertions.mjs";
 import { staticServer } from "../../scripts/serve-static.mjs";
 
 const root = new URL("../../", import.meta.url);
@@ -14,16 +16,17 @@ test("production export serves complete routes and assets from files only", asyn
   await once(server, "listening");
   t.after(() => { server.closeAllConnections(); server.close(); });
   const base = `http://127.0.0.1:${server.address().port}`;
-  const matches = snapshot.matches.filter((match) => match.competition?.code === "PL"
+  assert.equal(footballSnapshotError(snapshot), null);
+  const matches = (snapshot.matches ?? []).filter((match) => match.competition?.code === "PL"
     && (match.homeTeam.id === 64 || match.awayTeam.id === 64)
     && match.utcDate >= `${snapshot.competition.season}-07-01`
     && match.utcDate < `${snapshot.competition.season + 1}-07-01`);
   assert.equal(new Set(matches.map((match) => match.id)).size, matches.length);
-  assert.ok(matches.length > 0 && matches.length <= 38);
+  assert.ok(matches.length <= 38);
   const generatedIds = (await readdir(new URL("out/matches/", root), { withFileTypes: true }))
     .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
   assert.deepEqual(generatedIds, matches.map((match) => String(match.id)).sort());
-  for (const match of snapshot.matches.filter((item) => !matches.includes(item))) {
+  for (const match of (snapshot.matches ?? []).filter((item) => !matches.includes(item))) {
     assert.equal((await fetch(`${base}/matches/${match.id}/`)).status, 404);
   }
   const pages = ["/", "/squad", "/history", "/players/alisson-becker", "/players/dominik-szoboszlai",
@@ -42,15 +45,7 @@ test("production export serves complete routes and assets from files only", asyn
       assetPaths.add(match[1].replaceAll("&amp;", "&"));
     }
     if (page === "/") {
-      assert.match(html, /LATEST MATCH/);
-      assert.match(html, /TACTICAL REVIEW/);
-      assert.match(html, /LAST DATA UPDATE/);
-      assert.ok(html.includes(`/matches/${snapshot.lastResult.id}`));
-      assert.ok(html.includes(snapshot.nextFixture.homeTeam.name));
-      assert.ok(html.includes(snapshot.nextFixture.awayTeam.name));
-      const update = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Shanghai" })
-        .format(new Date(snapshot.lastUpdated)).toUpperCase();
-      assert.ok(html.includes(update));
+      assertHomepageSnapshot(html, snapshot);
     }
     if (page === "/history") {
       assert.match(html, /伊斯坦布尔奇迹/);
@@ -59,7 +54,7 @@ test("production export serves complete routes and assets from files only", asyn
     }
     if (page === "/matches") {
       for (const match of matches) assert.ok(html.includes(`/matches/${match.id}`));
-      for (const match of snapshot.matches.filter((item) => !matches.includes(item))) {
+      for (const match of (snapshot.matches ?? []).filter((item) => !matches.includes(item))) {
         assert.ok(!html.includes(`/matches/${match.id}`));
       }
     }

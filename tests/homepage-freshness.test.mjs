@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { assertHomepageSnapshot } from "./helpers/football-render-assertions.mjs";
 
 const snapshot = JSON.parse(
   await readFile(new URL("../public/data/football.json", import.meta.url), "utf8"),
@@ -18,23 +19,14 @@ test("renders homepage freshness fields from the football snapshot", async () =>
   const html = await response.text();
   const textHtml = html.replaceAll("<!-- -->", "");
   const liverpool = snapshot.standings.find((row) => row.team.id === 64);
-  const result = snapshot.lastResult;
-  const updateDate = new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    timeZone: "Asia/Shanghai",
-  }).format(new Date(snapshot.lastUpdated)).toUpperCase();
-
   assert.equal(response.status, 200);
-  assert.ok(result);
   assert.ok(liverpool);
-  assert.ok(textHtml.includes("LATEST MATCH"));
-  assert.ok(textHtml.includes(`${result.homeTeam.name} ${result.score.home}—${result.score.away} ${result.awayTeam.name}`));
-  assert.ok(textHtml.includes(`href="/matches/${result.id}"`));
-  assert.ok(textHtml.includes(`前 ${liverpool.playedGames} 轮仍是早期样本`));
+  assertHomepageSnapshot(textHtml, snapshot);
+  const count = liverpool.playedGames;
+  const expected = count === 0 ? "赛季样本尚未形成" : count <= 4 ? `前 ${count} 轮仍是早期样本`
+    : count <= 10 ? `${count} 轮比赛开始形成轮廓` : count <= 19 ? `${count} 轮之后`
+    : `${count} 轮比赛已经提供足够样本`;
+  assert.ok(textHtml.includes(expected));
   assert.ok(textHtml.includes("TACTICAL REVIEW · THROUGH MD 02"));
-  assert.ok(textHtml.includes("LAST DATA UPDATE"));
-  assert.ok(textHtml.includes(updateDate));
   assert.ok(!textHtml.includes("红军主场 2–2 战平森林"));
 });

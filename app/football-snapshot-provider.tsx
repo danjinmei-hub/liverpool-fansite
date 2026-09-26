@@ -27,7 +27,10 @@ export function FootballSnapshotProvider({
           signal: controller.signal,
         });
         const value: unknown = await result.json();
-        if (result.ok && isFootballSnapshot(value)) setSnapshot(value);
+        if (result.ok && isFootballSnapshot(value)) {
+          setSnapshot((current) => Date.parse(value.lastUpdated) >= Date.parse(current.lastUpdated)
+            ? value : current);
+        }
       } catch {
         // The rendered fallback remains visible when the snapshot endpoint is unavailable.
       }

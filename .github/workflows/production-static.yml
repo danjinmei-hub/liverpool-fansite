@@ -39,6 +39,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run test:football
       - run: npm run build:static
       - run: npm run test:static
       - name: Record exact source revision

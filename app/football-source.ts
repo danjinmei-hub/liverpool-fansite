@@ -15,13 +15,15 @@ export async function getLatestFootballSnapshot(): Promise<FootballSnapshot> {
     const remote = await fetch(REMOTE_SNAPSHOT_URL, {
       headers: { Accept: "application/json" },
       next: { revalidate: 900 },
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!remote.ok) throw new Error(`Snapshot request failed: ${remote.status}`);
 
     const snapshot: unknown = await remote.json();
     if (!isFootballSnapshot(snapshot)) throw new Error("Snapshot schema is invalid");
-    return snapshot;
+    return Date.parse(snapshot.lastUpdated) >= Date.parse(fallbackFootballSnapshot.lastUpdated)
+      ? snapshot : fallbackFootballSnapshot;
   } catch {
     return fallbackFootballSnapshot;
   }

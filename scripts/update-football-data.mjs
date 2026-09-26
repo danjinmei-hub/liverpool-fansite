@@ -1,5 +1,6 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { assertSafeFootballUpdate } from "./football-update-guard.mjs";
 
 const API_BASE = "https://api.football-data.org/v4";
 const LIVERPOOL_TEAM_ID = 64;
@@ -135,6 +136,21 @@ const matchesPayload = await fetchResource(
   `/teams/${LIVERPOOL_TEAM_ID}/matches?season=${season}`,
 );
 
+if (!Array.isArray(matchesPayload.matches)) {
+  throw new Error("Football update rejected: API matches must be an array");
+}
+for (const item of matchesPayload.matches) {
+  if (!item || typeof item !== "object") {
+    throw new Error("Football update rejected: API match must be an object");
+  }
+  if (item.competition?.code !== "PL") continue;
+  for (const side of ["homeTeam", "awayTeam"]) {
+    if (!Number.isSafeInteger(item[side]?.id) || item[side].id <= 0) {
+      throw new Error(`Football update rejected: API match ${item.id ?? "unknown"}.${side}.id is missing or invalid`);
+    }
+  }
+}
+
 const liverpoolMatches = matchesPayload.matches
   .filter(
     (item) =>
@@ -177,6 +193,15 @@ const snapshot = {
   matches: premierLeagueMatches.map(match),
   standings: selectStandings(allStandings),
 };
+
+// Read-only until the candidate passes both structure and update policy checks.
+let previous = null;
+try {
+  previous = JSON.parse(await readFile(OUTPUT_PATH, "utf8"));
+} catch (error) {
+  if (error.code !== "ENOENT") throw new Error(`Cannot read previous football snapshot: ${error.message}`);
+}
+assertSafeFootballUpdate(snapshot, previous);
 
 await mkdir(dirname(OUTPUT_PATH), { recursive: true });
 const temporaryPath = `${OUTPUT_PATH}.tmp`;

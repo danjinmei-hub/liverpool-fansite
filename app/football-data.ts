@@ -1,4 +1,5 @@
 import fallbackSnapshot from "../public/data/football.json";
+import { footballSnapshotError, selectSeasonMatches } from "../lib/football-snapshot.mjs";
 
 export const LIVERPOOL_TEAM_ID = 64;
 
@@ -62,41 +63,15 @@ export type FootballSnapshot = {
   standings: StandingRow[];
 };
 
-export const fallbackFootballSnapshot = fallbackSnapshot as FootballSnapshot;
-
 export function isFootballSnapshot(value: unknown): value is FootballSnapshot {
-  if (!value || typeof value !== "object") return false;
-
-  const snapshot = value as Partial<FootballSnapshot>;
-  return (
-    snapshot.schemaVersion === 1 &&
-    typeof snapshot.lastUpdated === "string" &&
-    snapshot.competition?.code === "PL" &&
-    snapshot.source?.name === "football-data.org" &&
-    (snapshot.matches === undefined || Array.isArray(snapshot.matches)) &&
-    Array.isArray(snapshot.standings)
-  );
+  return footballSnapshotError(value) === null;
 }
 
-export function getSeasonMatches(snapshot: FootballSnapshot) {
-  const matches = snapshot.matches?.length
-    ? snapshot.matches
-    : [snapshot.lastResult, snapshot.nextFixture].filter(
-        (match): match is FootballMatch => match !== null,
-      );
+// Fail the build for a broken committed fallback; remote failures keep this valid copy.
+const fallbackError = footballSnapshotError(fallbackSnapshot);
+if (fallbackError) throw new Error(`Invalid committed football snapshot: ${fallbackError}`);
+export const fallbackFootballSnapshot = fallbackSnapshot as FootballSnapshot;
 
-  const seasonStart = Date.UTC(snapshot.competition.season, 6, 1);
-  const seasonEnd = Date.UTC(snapshot.competition.season + 1, 6, 1);
-  // Older snapshots contain European fixtures too. Apply the archive's scope
-  // here so listing, detail lookup and static params always agree.
-  const leagueMatches = matches.filter((match) => {
-    const date = new Date(match.utcDate).getTime();
-    return match.competition?.code === "PL"
-      && (match.homeTeam.id === LIVERPOOL_TEAM_ID || match.awayTeam.id === LIVERPOOL_TEAM_ID)
-      && date >= seasonStart && date < seasonEnd;
-  });
-
-  return [...new Map(leagueMatches.map((match) => [match.id, match])).values()].sort(
-    (a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime(),
-  );
+export function getSeasonMatches(snapshot: FootballSnapshot): FootballMatch[] {
+  return selectSeasonMatches(snapshot);
 }
