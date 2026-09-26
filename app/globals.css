@@ -1640,6 +1640,16 @@ a:focus-visible {
   color: white;
 }
 
+.archive-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+}
+
+.archive-copy .archive-play {
+  color: var(--lime);
+}
+
 .archive-years {
   position: relative;
   z-index: 1;

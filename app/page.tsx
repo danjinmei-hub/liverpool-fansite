@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   ArrowUpRight,
   CircleDot,
   Clock3,
@@ -85,6 +86,7 @@ export default function Home() {
           <a href="#matchday">比赛</a>
           <Link href="/squad">阵容</Link>
           <a href="#tactics">战术</a>
+          <Link href="/history">历史</Link>
           <a href="#updates">动态</a>
         </nav>
 
@@ -240,7 +242,12 @@ export default function Home() {
           <span>COMING NEXT · THE ARCHIVE</span>
           <h2 id="archive-title">历史不是背景，<br />它仍在解释今天。</h2>
           <p>从香克利到克洛普，从杰拉德到萨拉赫：下一阶段将建立可检索的教练、球员与经典比赛档案。</p>
-          <SourceLink href="https://www.liverpoolfc.com/history">进入官方历史页</SourceLink>
+          <div className="archive-links">
+            <Link className="source-link archive-play" href="/history">
+              观看 40 秒红军史 <ArrowRight aria-hidden="true" size={15} />
+            </Link>
+            <SourceLink href="https://www.liverpoolfc.com/history">进入官方历史页</SourceLink>
+          </div>
         </div>
         <div className="archive-years" aria-label="重要年份">
           <span>1959</span><span>1977</span><span>2005</span><span>2019</span><span>2025</span>
