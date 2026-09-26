@@ -20,24 +20,24 @@ The archive is Liverpool Premier League only, within the snapshot season's Julyâ
 
 Publish the **whole output**, not just football.json: archive HTML, detail HTML, initial homepage data and JSON must belong to the same build. A file-only upload cannot regenerate HTML for new fixtures. The static archive updates on successful rebuild/publication, not ISR.
 
-## Automatic build now; upload later
+## Automatic build and OSS upload
 
-`.github/workflows/production-static.yml` builds on main pushes, manual dispatch, and successful completion of `Update football data`. `workflow_run` is needed because pushes using `GITHUB_TOKEN` do not trigger downstream push workflows. It checks out latest main (the data workflow's head SHA precedes its generated commit), runs smoke tests and saves an artifact for 7 days. It uses no secrets and has read-only repository permissions. It never downloads executable artifacts from another workflow or checks out a fork.
+`.github/workflows/production-static.yml` builds on main pushes, manual dispatch, and successful completion of `Update football data`. `workflow_run` is needed because pushes using `GITHUB_TOKEN` do not trigger downstream push workflows. It checks out latest main (the data workflow's head SHA precedes its generated commit), runs smoke tests and saves the validated `out/` artifact for 7 days. The separate publish job downloads **that same run's** artifact and checks out the build's exact source commit for the upload script. If main moved in the meantime, this job stops and leaves the next run to publish the newer version. The repository permissions are read-only; OSS credentials are provided only to the upload step. This workflow never downloads executable artifacts from another workflow or checks out a fork.
 
-After separately approving and provisioning OSS, add a gated upload step/job **after these tests**, consuming this exact artifact/output. Keep builds/publications serialized; do not let an older artifact publish after a newer revision. Restrict upload to main, use a GitHub production environment and enable it only after bucket/domain settings are verified. Until then, Actions only produces artifacts: it does not update an OSS website.
+The upload script pins Alibaba Cloud ossutil 2.4.0 by SHA256 and restricts the destination to `redchorus-hk-prod` in Hong Kong. It uploads hashed Next assets first, briefly cached local assets second, HTML/RSC and the JSON snapshot third, and the root homepage last. It never deletes older OSS objects. Runs are serialized and a failed build or test prevents upload. An OSS upload does not configure static hosting, public read policy, a custom domain or DNS; browser-facing site validation must follow those separate settings.
 
-Four GitHub Secrets for the future upload job:
+Four GitHub repository Secrets for the upload job:
 
 | Secret | Value |
 | --- | --- |
-| `OSS_ENDPOINT` | Hong Kong regional endpoint, normally `https://oss-cn-hongkong.aliyuncs.com` |
-| `OSS_BUCKET` | Dedicated website bucket name |
+| `OSS_ENDPOINT` | `oss-cn-hongkong.aliyuncs.com` (an `https://` prefix also works) |
+| `OSS_BUCKET` | `redchorus-hk-prod` |
 | `OSS_ACCESS_KEY_ID` | Dedicated, least-privilege RAM deployment identity |
 | `OSS_ACCESS_KEY_SECRET` | Its secret; never a browser build variable or `NEXT_PUBLIC_*` value |
 
 Limit the RAM identity to required object operations in this bucket; no account-wide admin, DNS or bucket-management permissions. `FOOTBALL_DATA_API_KEY` remains solely in the existing data update job. A future OIDC/STS setup may replace long-lived keys but is not required for this readiness change.
 
-## Required OSS settings (not applied by this task)
+## Required OSS website settings (not applied by the upload workflow)
 
 1. Hong Kong bucket, static website hosting; default page `index.html`, **enable subdirectory homepage**, support redirect `/matches/123` to `/matches/123/`. Error document `404.html` with real 404 status, not SPA fallback to `/index.html`.
 2. Serve correct MIME types (`.html` text/html, `.js` text/javascript, `.css` text/css, `.json` application/json). Anonymous website assets must be readable under the chosen website policy. Configure custom-domain HTTPS separately; the bucket endpoint alone is not the finished public HTTPS setup.
@@ -46,7 +46,7 @@ Limit the RAM identity to required object operations in this bucket; no account-
 5. Upload immutable assets first, then route HTML/RSC, JSON and homepage; retain old hashed assets for cached tabs. Never blindly `sync --delete` a bucket. Plain OSS multi-object upload is **not atomic**; document the brief mixed-release window, retain the previous complete artifact, and re-upload it for rollback. Stronger atomic cutovers can be added later if required.
 6. Verify direct navigation/reload to all listed routes, a finished and future match, local images, JSON, FotMob and 375px layout against the actual OSS endpoint/custom domain before switching traffic. Local tests emulate directory indexes; they do not prove remote bucket/TLS settings.
 
-No bucket, credentials, DNS, `redchorus.com` binding or real upload was created here.
+The upload workflow does not purchase or change a bucket, RAM identity, DNS or `redchorus.com` binding. Publishing objects alone does not make an OSS service endpoint a browser-rendered website; a custom domain and HTTPS configuration are separate steps.
 
 ## Official references
 
