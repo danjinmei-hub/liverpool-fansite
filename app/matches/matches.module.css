@@ -357,6 +357,151 @@
   font-size: 12px;
 }
 
+.journal {
+  width: min(100%, 880px);
+  margin: 132px auto 0;
+}
+
+.journalHeader {
+  padding-bottom: 44px;
+}
+
+.journalHeader > span,
+.journalSection > div > span,
+.threadHeading > span {
+  color: var(--red);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.journalHeader h2 {
+  max-width: 750px;
+  margin: 24px 0 0;
+  font-size: clamp(34px, 5vw, 62px);
+  letter-spacing: -.05em;
+  line-height: 1.18;
+}
+
+.journalSection {
+  padding: 38px 0 54px;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 48px;
+  border-top: 1px solid var(--ink);
+}
+
+.journalSection h3 {
+  margin: 12px 0 0;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -.025em;
+}
+
+.journalSection p {
+  max-width: 610px;
+  margin: 0;
+  color: #403936;
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.9;
+  white-space: pre-line;
+}
+
+.journalSources {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journalSources li + li {
+  margin-top: 16px;
+}
+
+.journalSources a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 15px;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 5px;
+}
+
+.journalSources a:hover {
+  color: var(--red);
+  text-decoration-color: var(--red);
+}
+
+.thread {
+  width: min(100%, 1120px);
+  margin: 132px auto 0;
+  padding-top: 26px;
+  border-top: 2px solid var(--ink);
+}
+
+.threadHeading h2 {
+  margin: 10px 0 36px;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -.04em;
+}
+
+.threadLinks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+}
+
+.threadLinks a {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.threadPrevious {
+  grid-column: 1;
+}
+
+.threadNext {
+  grid-column: 3;
+  justify-self: end;
+  text-align: right;
+}
+
+.threadLinks .threadAll {
+  grid-column: 2;
+  justify-self: center;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.threadPrevious span,
+.threadNext span {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.threadPrevious small,
+.threadNext small {
+  display: block;
+  margin-bottom: 5px;
+  color: #756b68;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.threadLinks a:hover,
+.threadLinks a:focus-visible {
+  color: var(--red);
+}
+
 .missing {
   width: min(100%, 760px);
   margin: 16vh auto 0;
@@ -523,6 +668,51 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 6px;
+  }
+
+  .journal {
+    margin-top: 92px;
+  }
+
+  .journalHeader {
+    padding-bottom: 28px;
+  }
+
+  .journalSection {
+    padding: 27px 0 42px;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .journalSection h3 {
+    margin-top: 7px;
+  }
+
+  .thread {
+    margin-top: 94px;
+  }
+
+  .threadLinks {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px 12px;
+  }
+
+  .threadNext {
+    grid-column: 2;
+  }
+
+  .threadLinks .threadAll {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    justify-content: center;
+    border-top: 1px solid var(--line);
+  }
+
+  .threadPrevious span,
+  .threadNext span {
+    font-size: 12px;
+    overflow-wrap: anywhere;
   }
 
   .missing {

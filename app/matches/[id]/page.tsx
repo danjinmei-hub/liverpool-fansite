@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -6,6 +6,8 @@ import { fallbackFootballSnapshot, getSeasonMatches } from "../../football-data"
 import { pageMetadata } from "../../seo";
 import { getLatestFootballSnapshot } from "../../football-source";
 import { getFotmobLink } from "../../fotmob-links";
+import editorialData from "../../../data/match-editorial.json";
+import { getEditorialSections, getMatchEditorial, getMatchThread, matchEditorialError } from "../../../lib/match-editorial.mjs";
 import {
   completedStatuses,
   matchCompetition,
@@ -17,6 +19,9 @@ import {
 import styles from "../matches.module.css";
 
 export const revalidate = 900;
+
+const editorialError = matchEditorialError(editorialData);
+if (editorialError) throw new Error(`Invalid match editorial: ${editorialError}`);
 
 export function generateStaticParams() {
   return getSeasonMatches(fallbackFootballSnapshot).map((match) => ({ id: String(match.id) }));
@@ -46,12 +51,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const snapshot = await getLatestFootballSnapshot();
-  const match = getSeasonMatches(snapshot).find((item) => String(item.id) === id);
+  const seasonMatches = getSeasonMatches(snapshot);
+  const match = seasonMatches.find((item) => String(item.id) === id);
 
   if (!match) notFound();
 
   const completed = completedStatuses.has(match.status);
   const fotmob = getFotmobLink(match.id);
+  const editorial = getMatchEditorial(editorialData, match.id);
+  const sections = getEditorialSections(editorial);
+  const thread = getMatchThread(seasonMatches, match.id);
 
   return (
     <main className={`${styles.page} ${styles.detailPage}`}>
@@ -104,6 +113,51 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
           <small>本站仅展示数据快照中已有的信息。</small>
         </div>
       </article>
+
+      {sections.length > 0 && (
+        <article className={styles.journal} aria-label="RED CHORUS 比赛笔记">
+          <header className={styles.journalHeader}>
+            <span>RED CHORUS · SEASON JOURNAL</span>
+            {editorial?.headline && <h2>{editorial.headline}</h2>}
+          </header>
+          {sections.map((section) => (
+            <section className={styles.journalSection} key={section.kind}>
+              <div><span>{section.label}</span><h3>{section.title}</h3></div>
+              {section.kind === "sources" ? (
+                <ul className={styles.journalSources}>
+                  {section.sources.map((source: { label: string; url: string }) => (
+                    <li key={source.url}><a href={source.url} rel="noopener noreferrer" target="_blank">
+                      {source.label} <ArrowUpRight aria-hidden="true" size={15} />
+                    </a></li>
+                  ))}
+                </ul>
+              ) : <p>{section.text}</p>}
+            </section>
+          ))}
+        </article>
+      )}
+
+      <nav className={styles.thread} aria-label="赛季比赛导航">
+        <div className={styles.threadHeading}><span>THE THREAD</span><h2>赛季脉络</h2></div>
+        <div className={styles.threadLinks}>
+          {thread?.previous && (
+            <Link className={styles.threadPrevious} href={`/matches/${thread.previous.id}`}
+              aria-label={`上一场：${thread.previous.homeTeam.name} 对 ${thread.previous.awayTeam.name}`}>
+              <ArrowLeft aria-hidden="true" size={18} /><span><small>上一场比赛</small>
+                {thread.previous.homeTeam.name} · {thread.previous.awayTeam.name}</span>
+            </Link>
+          )}
+          <Link className={styles.threadAll} href="/matches">全部比赛</Link>
+          {thread?.next && (
+            <Link className={styles.threadNext} href={`/matches/${thread.next.id}`}
+              aria-label={`下一场：${thread.next.homeTeam.name} 对 ${thread.next.awayTeam.name}`}>
+              <span><small>下一场比赛</small>
+                {thread.next.homeTeam.name} · {thread.next.awayTeam.name}</span>
+              <ArrowRight aria-hidden="true" size={18} />
+            </Link>
+          )}
+        </div>
+      </nav>
     </main>
   );
 }

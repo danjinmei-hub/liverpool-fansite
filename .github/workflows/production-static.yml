@@ -53,6 +53,7 @@ jobs:
       - run: npm ci
       - run: npm run test:football
       - run: npm run test:fotmob
+      - run: node --test tests/unit/match-editorial.test.mjs
       - name: Audit FotMob coverage (missing links warn only)
         run: npm run audit:fotmob
       - run: npm run build:static

@@ -3,7 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { once } from "node:events";
 import { resolve } from "node:path";
 import test from "node:test";
-import { footballSnapshotError } from "../../lib/football-snapshot.mjs";
+import { footballSnapshotError, selectSeasonMatches } from "../../lib/football-snapshot.mjs";
+import { getMatchThread } from "../../lib/match-editorial.mjs";
 import { assertHomepageSnapshot } from "../helpers/football-render-assertions.mjs";
 import { staticServer } from "../../scripts/serve-static.mjs";
 
@@ -78,6 +79,14 @@ test("production export serves complete routes and assets from files only", asyn
       assert.ok(html.includes(`${match.homeTeam.name} vs ${match.awayTeam.name}`)
         || html.includes(`${match.homeTeam.name} ${match.score.home}—${match.score.away} ${match.awayTeam.name}`), page);
       if (links[id]) assert.ok(html.includes(links[id].fotmobUrl));
+      const thread = getMatchThread(selectSeasonMatches(snapshot), id);
+      assert.match(html, /THE THREAD/);
+      assert.match(html, /href="\/matches\/"[^>]*>全部比赛<\/a>/);
+      if (thread.previous) assert.ok(html.includes(`href="/matches/${thread.previous.id}/"`));
+      else assert.ok(!html.includes("上一场比赛"));
+      if (thread.next) assert.ok(html.includes(`href="/matches/${thread.next.id}/"`));
+      else assert.ok(!html.includes("下一场比赛"));
+      assert.doesNotMatch(html, /RED CHORUS · SEASON JOURNAL|MATCH NOTE|这场比赛的位置|资料来源/);
     }
   }
   for (const path of assetPaths) assert.equal((await fetch(base + path)).status, 200, path);
