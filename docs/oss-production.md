@@ -48,6 +48,14 @@ Limit the RAM identity to required object operations in this bucket; no account-
 
 The upload workflow does not purchase or change a bucket, RAM identity, DNS or `redchorus.com` binding. Publishing objects alone does not make an OSS service endpoint a browser-rendered website; a custom domain and HTTPS configuration are separate steps.
 
+## Release verification and traceability
+
+The production workflow resolves **one full Git SHA** from current `main` before building. Its static and Sites/Vinext jobs check out that exact commit. The static job runs the football and FotMob checks, static export and HTTP smoke test. The Sites job runs the existing Vinext build and focused rendered-route tests; it validates the backup build but does not publish to ChatGPT Sites. OSS upload requires both jobs to pass. The data-bot `workflow_run` still resolves the newly committed `main` snapshot, and publishing stops if `main` moves again before upload.
+
+The validated static artifact contains `/release.json`: commit SHA, football snapshot `lastUpdated` and SHA256, build target (`next-static-export`), deployment type (`oss-production`), and SHA256 hashes of the homepage, `/matches/`, a current-season `/matches/[id]/`, and the Van Dijk player page. The file is uploaded after the homepage. The commit SHA is available for operations at this URL, without adding it to visible page copy. It describes the OSS release only; the Sites preview follows its separate publication schedule.
+
+After upload, the workflow makes read-only GET requests to `https://redchorus.com` for `/release.json`, the four pages and `/data/football.json`. It compares the served bytes with the **same built artifact**, including the snapshot time. It retries up to six times at ten-second intervals for brief propagation delay; a missing page, redirect to another origin, stale release, wrong snapshot or differing HTML fails the publish job with a specific error. This verifies the public domain and selected routes, while remaining a bounded sample rather than a transactional/atomic cutover for every file.
+
 ## Official references
 
 - [Next.js static exports](https://nextjs.org/docs/app/guides/static-exports)

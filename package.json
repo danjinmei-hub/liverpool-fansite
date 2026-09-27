@@ -14,6 +14,7 @@
     "test:fotmob": "node --test tests/unit/fotmob-*.test.mjs",
     "audit:fotmob": "node scripts/audit-fotmob-links.mjs",
     "test:static": "node --test tests/static/*.test.mjs",
+    "test:release": "node --test tests/unit/release-verification.test.mjs",
     "serve:static": "node scripts/serve-static.mjs",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run build && node --test tests/*.test.mjs",

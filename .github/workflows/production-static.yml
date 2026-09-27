@@ -18,21 +18,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  revision:
     if: >-
       github.ref == 'refs/heads/main' &&
       (github.event_name != 'workflow_run' ||
        (github.event.workflow_run.conclusion == 'success' &&
         github.event.workflow_run.head_repository.full_name == github.repository))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     outputs:
-      source_sha: ${{ steps.revision.outputs.sha }}
+      source_sha: ${{ steps.source.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           # workflow_run.head_sha is the pre-update revision, not the bot's new commit.
           ref: main
+          persist-credentials: false
+      - id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: revision
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.revision.outputs.source_sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -45,11 +57,11 @@ jobs:
         run: npm run audit:fotmob
       - run: npm run build:static
       - run: npm run test:static
-      - name: Record exact source revision
-        id: revision
-        run: |
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
+      - run: npm run test:release
+      - name: Attach exact release manifest to the validated artifact
+        env:
+          RELEASE_SHA: ${{ needs.revision.outputs.source_sha }}
+        run: node scripts/prepare-release.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: red-chorus-static-${{ github.run_id }}
@@ -57,18 +69,41 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  sites:
+    needs: revision
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.revision.outputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify Sites / Vinext build
+        run: npm run build
+      - name: Verify rendered Sites routes
+        run: node --test tests/match-archive.test.mjs tests/homepage-freshness.test.mjs
+      - name: Record Sites build target
+        env:
+          SOURCE_SHA: ${{ needs.revision.outputs.source_sha }}
+        run: echo "Sites / Vinext build and route checks passed for ${SOURCE_SHA}. (Validation only; Sites publication is separate.)" >> "$GITHUB_STEP_SUMMARY"
+
   publish:
-    needs: build
+    needs: [revision, build, sites]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.build.outputs.source_sha }}
+          ref: ${{ needs.revision.outputs.source_sha }}
           persist-credentials: false
       - name: Skip publishing if a newer main revision exists
         env:
-          BUILT_SHA: ${{ needs.build.outputs.source_sha }}
+          BUILT_SHA: ${{ needs.revision.outputs.source_sha }}
         run: |
           current_sha=$(git ls-remote origin refs/heads/main | cut -f1)
           if [[ "$BUILT_SHA" != "$current_sha" ]]; then
@@ -95,7 +130,5 @@ jobs:
           OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
           OSS_REGION: cn-hongkong
         run: bash scripts/deploy-oss-static.sh
-      - name: Record published revision
-        run: |
-          echo "Published validated artifact from workflow run ${{ github.run_id }} to OSS." >> "$GITHUB_STEP_SUMMARY"
-          echo "This workflow does not configure a domain or DNS." >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify the public production release
+        run: node scripts/verify-production.mjs
