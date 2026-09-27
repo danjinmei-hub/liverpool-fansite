@@ -1,16 +1,47 @@
 {
+  "560550": {
+    "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-newcastle-united/2ygyxm",
+    "matchLabel": "Newcastle United 2–2 Liverpool",
+    "matchDate": "2026-08-23",
+    "homeTeamId": 67,
+    "awayTeamId": 64,
+    "verificationSource": "https://www.fotmob.com/matches/liverpool-vs-newcastle-united/2ygyxm",
+    "verifiedAt": "2026-09-26"
+  },
+  "560552": {
+    "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-nottingham-forest/2xthvt",
+    "matchLabel": "Liverpool 2–2 Nottingham Forest",
+    "matchDate": "2026-08-29",
+    "homeTeamId": 64,
+    "awayTeamId": 351,
+    "verificationSource": "https://www.fotmob.com/matches/liverpool-vs-nottingham-forest/2xthvt",
+    "verifiedAt": "2026-09-26"
+  },
   "560566": {
     "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-ipswich-town/2ugv0q",
     "matchLabel": "Ipswich Town 0–2 Liverpool",
     "matchDate": "2026-09-04",
-    "verificationSource": "https://www.fotmob.com/teams/8650/overview/liverpool",
-    "verifiedAt": "2026-09-05"
+    "homeTeamId": 349,
+    "awayTeamId": 64,
+    "verificationSource": "https://www.fotmob.com/matches/liverpool-vs-ipswich-town/2ugv0q",
+    "verifiedAt": "2026-09-26"
   },
   "560573": {
     "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-fulham/2u7pyg",
-    "matchLabel": "Liverpool vs Fulham",
+    "matchLabel": "Liverpool 0–0 Fulham",
     "matchDate": "2026-09-12",
-    "verificationSource": "https://www.fotmob.com/teams/8650/overview/liverpool",
-    "verifiedAt": "2026-09-05"
+    "homeTeamId": 64,
+    "awayTeamId": 63,
+    "verificationSource": "https://www.fotmob.com/matches/liverpool-vs-fulham/2u7pyg",
+    "verifiedAt": "2026-09-26"
+  },
+  "560582": {
+    "fotmobUrl": "https://www.fotmob.com/matches/liverpool-vs-afc-bournemouth/2he69q",
+    "matchLabel": "AFC Bournemouth 0–1 Liverpool",
+    "matchDate": "2026-09-20",
+    "homeTeamId": 1044,
+    "awayTeamId": 64,
+    "verificationSource": "https://www.fotmob.com/matches/liverpool-vs-afc-bournemouth/2he69q",
+    "verifiedAt": "2026-09-26"
   }
 }
