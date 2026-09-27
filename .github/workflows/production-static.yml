@@ -86,7 +86,7 @@ jobs:
       - name: Verify Sites / Vinext build
         run: npm run build
       - name: Verify rendered Sites routes
-        run: node --test tests/match-archive.test.mjs tests/homepage-freshness.test.mjs
+        run: node --test tests/match-archive.test.mjs tests/homepage-freshness.test.mjs tests/seo-preview.test.mjs
       - name: Record Sites build target
         env:
           SOURCE_SHA: ${{ needs.revision.outputs.source_sha }}

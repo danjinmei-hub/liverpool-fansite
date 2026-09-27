@@ -1,6 +1,9 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { fallbackFootballSnapshot, getSeasonMatches } from "../../football-data";
+import { pageMetadata } from "../../seo";
 import { getLatestFootballSnapshot } from "../../football-source";
 import { getFotmobLink } from "../../fotmob-links";
 import {
@@ -13,15 +16,31 @@ import {
 } from "../match-display";
 import styles from "../matches.module.css";
 
-export const metadata = {
-  title: "比赛详情",
-  description: "Liverpool 当前赛季比赛基础信息。",
-};
-
 export const revalidate = 900;
 
 export function generateStaticParams() {
   return getSeasonMatches(fallbackFootballSnapshot).map((match) => ({ id: String(match.id) }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const snapshot = await getLatestFootballSnapshot();
+  const match = getSeasonMatches(snapshot).find((item) => String(item.id) === id);
+  if (!match) notFound();
+
+  const date = new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric", month: "long", day: "numeric", timeZone: "Asia/Shanghai",
+  }).format(new Date(match.utcDate));
+  const completed = completedStatuses.has(match.status);
+  const fixture = completed
+    ? `${match.homeTeam.name} ${match.score.home}—${match.score.away} ${match.awayTeam.name}`
+    : `${match.homeTeam.name} vs ${match.awayTeam.name}`;
+  const round = match.matchday ? `第 ${match.matchday} 轮` : "";
+  return pageMetadata({
+    path: `/matches/${match.id}/`,
+    title: `${fixture}｜${date}英超比赛`,
+    description: `${snapshot.competition.season}/${String(snapshot.competition.season + 1).slice(-2)} 英超${round} · ${date} · ${fixture} · ${matchStatus(match.status)}。RED CHORUS 比赛档案。`,
+  });
 }
 
 export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
@@ -29,18 +48,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
   const snapshot = await getLatestFootballSnapshot();
   const match = getSeasonMatches(snapshot).find((item) => String(item.id) === id);
 
-  if (!match) {
-    return (
-      <main className={`${styles.page} ${styles.detailPage}`}>
-        <div className={styles.missing}>
-          <span>MATCH ARCHIVE</span>
-          <h1>这场比赛暂未进入当前数据快照。</h1>
-          <p>数据源短暂不可用时，本站会保留现有快照，不生成未经确认的比赛信息。</p>
-          <Link href="/matches"><ArrowLeft aria-hidden="true" size={16} /> 返回本赛季比赛</Link>
-        </div>
-      </main>
-    );
-  }
+  if (!match) notFound();
 
   const completed = completedStatuses.has(match.status);
   const fotmob = getFotmobLink(match.id);

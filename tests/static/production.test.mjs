@@ -33,12 +33,25 @@ test("production export serves complete routes and assets from files only", asyn
     "/players/virgil-van-dijk", "/matches", ...matches.map((match) => `/matches/${match.id}`),
     ...Object.keys(links).map((id) => `/out/fotmob/${id}`)];
   const assetPaths = new Set();
+  const pageTitles = new Set();
   for (const page of pages) {
     const response = await fetch(base + page);
     assert.equal(response.status, 200, page);
     const html = (await response.text()).replaceAll("<!-- -->", "");
     assert.match(html, /RED CHORUS/, page);
     assert.doesNotMatch(html, /chatgpt\.site|signin-with-chatgpt|Powered by (OpenAI|ChatGPT)/i);
+    if (!page.startsWith("/out/fotmob/")) {
+      const path = page === "/" ? "/" : `${page}/`;
+      const canonical = `https://redchorus.com${path}`;
+      assert.ok(html.includes(`<link rel="canonical" href="${canonical}"/>`), page);
+      assert.ok(html.includes(`<meta property="og:url" content="${canonical}"/>`), page);
+      assert.match(html, /<meta name="robots" content="index, follow"\/>/, page);
+      assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/, page);
+      assert.match(html, /<meta property="og:image" content="https:\/\/redchorus.com\/anfield-cc0.jpg"\/>/, page);
+      const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
+      assert.ok(title && !pageTitles.has(title), `Missing or duplicate title: ${page}`);
+      pageTitles.add(title);
+    }
     // Re-opening a nested URL uses its own HTML, never the homepage fallback.
     assert.equal((await fetch(base + page)).status, 200);
     for (const match of html.matchAll(/(?:src|href)="(\/[^"?#]*)(?:[^" ]*)?"/g)) {
@@ -62,6 +75,8 @@ test("production export serves complete routes and assets from files only", asyn
       const id = page.split("/").at(-1);
       const match = snapshot.matches.find((item) => String(item.id) === id);
       assert.ok(html.includes(match.homeTeam.name) && html.includes(match.awayTeam.name));
+      assert.ok(html.includes(`${match.homeTeam.name} vs ${match.awayTeam.name}`)
+        || html.includes(`${match.homeTeam.name} ${match.score.home}—${match.score.away} ${match.awayTeam.name}`), page);
       if (links[id]) assert.ok(html.includes(links[id].fotmobUrl));
     }
   }
@@ -69,6 +84,19 @@ test("production export serves complete routes and assets from files only", asyn
   const jsonResponse = await fetch(base + "/data/football.json");
   assert.match(jsonResponse.headers.get("content-type"), /application\/json/);
   assert.deepEqual(await jsonResponse.json(), snapshot);
+  const robots = await fetch(base + "/robots.txt");
+  assert.equal(robots.status, 200);
+  assert.match(await robots.text(), /Sitemap: https:\/\/redchorus.com\/sitemap.xml/);
+  const sitemap = await fetch(base + "/sitemap.xml");
+  assert.equal(sitemap.status, 200);
+  assert.match(sitemap.headers.get("content-type"), /xml/);
+  const sitemapXml = await sitemap.text();
+  const foundUrls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const expectedPaths = ["/", "/squad/", "/history/", "/matches/",
+    "/players/alisson-becker/", "/players/dominik-szoboszlai/", "/players/virgil-van-dijk/",
+    ...matches.map(({ id }) => `/matches/${id}/`)];
+  assert.deepEqual(foundUrls.sort(), expectedPaths.map((path) => `https://redchorus.com${path}`).sort());
+  assert.equal(foundUrls.length, new Set(foundUrls).size);
   assert.equal((await fetch(base + "/api/football")).status, 404);
   assert.equal((await fetch(base + "/matches/unknown-match/")).status, 404);
   const entries = await readdir(new URL("out/", root));

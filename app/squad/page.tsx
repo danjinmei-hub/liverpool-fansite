@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, BookOpen, Camera, Heart, Sparkles } from "lucide-react";
 import { PhotoCredits } from "../photo-credits";
 import { PlayerCard } from "../player-card";
 import { rotationGroups, rotationSquad } from "../squad-data";
+import { pageMetadata } from "../seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/squad/",
   title: "阵容地图",
   description: "利物浦 2026/27 赛季主要轮换与替补池：真实照片、风格速写与可核验来源。",
-};
+});
 
 const profileModules = [
   { icon: Sparkles, title: "生涯高光", text: "关键比赛、决定性瞬间，以及真正改变球员轨迹的节点。" },

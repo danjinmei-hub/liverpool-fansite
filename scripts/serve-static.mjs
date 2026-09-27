@@ -4,7 +4,7 @@ import { extname, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const types = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript",
-  ".json": "application/json", ".txt": "text/plain", ".svg": "image/svg+xml", ".jpg": "image/jpeg",
+  ".json": "application/json", ".xml": "application/xml", ".txt": "text/plain", ".svg": "image/svg+xml", ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2", ".ico": "image/x-icon" };
 
 // Plain files only: directory indexes like OSS, no SSR, API or SPA fallback.

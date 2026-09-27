@@ -21,6 +21,10 @@ export async function createReleaseManifest(directory, commitSha) {
     path,
     sha256: hash(await readFile(join(directory, path.slice(1), "index.html"))),
   })));
+  const seoFiles = await Promise.all(["/robots.txt", "/sitemap.xml"].map(async (path) => ({
+    path,
+    sha256: hash(await readFile(join(directory, path.slice(1)))),
+  })));
   const manifest = {
     schemaVersion: 1,
     commitSha,
@@ -29,6 +33,7 @@ export async function createReleaseManifest(directory, commitSha) {
     buildTarget: "next-static-export",
     deploymentType: "oss-production",
     pages,
+    seoFiles,
   };
   await writeFile(join(directory, "release.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   return manifest;
@@ -69,6 +74,11 @@ export async function verifyPublishedRelease({
           const bytes = await get(path, attempt, "text/html");
           if (hash(bytes) !== sha256) throw new Error(`${path}: HTML differs from build ${expected.commitSha}`);
         }),
+        ...expected.seoFiles.map(async ({ path, sha256 }) => {
+          const contentType = path.endsWith(".xml") ? "application/xml" : "text/plain";
+          const bytes = await get(path, attempt, contentType);
+          if (hash(bytes) !== sha256) throw new Error(`${path}: differs from published build`);
+        }),
         (async () => {
           const bytes = await get("/data/football.json", attempt, "application/json");
           if (hash(bytes) !== expected.footballSnapshotSha256) {
@@ -79,8 +89,21 @@ export async function verifyPublishedRelease({
             throw new Error("/data/football.json: lastUpdated differs from release manifest");
           }
         })(),
+        (async () => {
+          const path = "/matches/unknown-match/";
+          const url = new URL(path, origin);
+          url.searchParams.set("release_check", `${expected.commitSha}-${attempt}`);
+          const response = await fetchImpl(url, {
+            headers: { "Cache-Control": "no-cache" }, cache: "no-store", signal: AbortSignal.timeout(12_000),
+          });
+          if (new URL(response.url).origin !== origin.origin || response.status !== 404) {
+            throw new Error(`${path}: expected a real HTTP 404, received ${response.status}`);
+          }
+          await response.arrayBuffer();
+        })(),
       ]);
-      return { attempts: attempt, pages: expected.pages.map(({ path }) => path) };
+      return { attempts: attempt, pages: expected.pages.map(({ path }) => path),
+        seoFiles: expected.seoFiles.map(({ path }) => path) };
     } catch (error) {
       lastError = error;
       if (attempt < attempts) await sleep(retryDelayMs);

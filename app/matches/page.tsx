@@ -11,11 +11,13 @@ import {
   updateDate,
 } from "./match-display";
 import styles from "./matches.module.css";
+import { pageMetadata } from "../seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/matches/",
   title: "本赛季比赛",
   description: "RED CHORUS 的 Liverpool 当前赛季比赛档案。",
-};
+});
 
 export const revalidate = 900;
 

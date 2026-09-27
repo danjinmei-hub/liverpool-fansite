@@ -21,6 +21,8 @@ test("release manifest binds the exact static pages, Git commit and football sna
   }
   await mkdir(join(directory, "data"));
   await writeFile(join(directory, "data/football.json"), JSON.stringify(snapshot));
+  await writeFile(join(directory, "robots.txt"), "User-Agent: *\nAllow: /\n");
+  await writeFile(join(directory, "sitemap.xml"), "<urlset></urlset>");
   await writeFile(join(directory, "404.html"), "not found");
   await assert.rejects(createReleaseManifest(directory, "short"), /full Git commit SHA/);
 
@@ -29,6 +31,7 @@ test("release manifest binds the exact static pages, Git commit and football sna
   assert.equal(manifest.footballSnapshotLastUpdated, snapshot.lastUpdated);
   assert.deepEqual(manifest.pages.map(({ path }) => path),
     ["/", "/matches/", "/matches/101/", "/players/virgil-van-dijk/"]);
+  assert.deepEqual(manifest.seoFiles.map(({ path }) => path), ["/robots.txt", "/sitemap.xml"]);
 
   const server = staticServer(directory).listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -47,6 +50,10 @@ test("release manifest binds the exact static pages, Git commit and football sna
   await writeFile(dataFile, JSON.stringify({ ...snapshot, lastUpdated: "2026-09-27T00:00:00Z" }));
   await assert.rejects(verifyPublishedRelease(options), /football.json: snapshot differs/);
   await writeFile(dataFile, JSON.stringify(snapshot));
+
+  await writeFile(join(directory, "sitemap.xml"), "<urlset>stale</urlset>");
+  await assert.rejects(verifyPublishedRelease(options), /sitemap.xml: differs/);
+  await writeFile(join(directory, "sitemap.xml"), "<urlset></urlset>");
 
   const manifestFile = join(directory, "release.json");
   await writeFile(manifestFile, JSON.stringify({ ...manifest, commitSha: "b".repeat(40) }));

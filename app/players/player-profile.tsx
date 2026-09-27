@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { pageMetadata } from "../seo";
 
 type ProfileFact = {
   label: string;
@@ -153,10 +154,11 @@ function LineBreakTitle({ lines }: { lines: readonly string[] }) {
 }
 
 export function createPlayerProfileMetadata(data: PlayerProfileData): Metadata {
-  return {
+  return pageMetadata({
+    path: `/players/${data.slug}/`,
     title: data.seo.title,
     description: data.seo.description,
-  };
+  });
 }
 
 export function PlayerProfile({ data }: PlayerProfileProps) {

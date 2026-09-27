@@ -34,7 +34,7 @@ export OSS_ENDPOINT=https://oss-cn-hongkong.aliyuncs.com
 export OSS_REGION=cn-hongkong
 
 site_dir="${1:-out}"
-for required in index.html 404.html matches/index.html data/football.json release.json; do
+for required in index.html 404.html matches/index.html data/football.json robots.txt sitemap.xml release.json; do
   if [[ ! -f "$site_dir/$required" ]]; then
     echo "Static output is incomplete: $required" >&2
     exit 1
@@ -59,7 +59,7 @@ ossutil cp -r "$site_dir/_next/static/" "${destination}_next/static/" \
 mkdir "$staging/assets"
 cp -a "$site_dir/." "$staging/assets/"
 rm -rf "$staging/assets/_next/static"
-find "$staging/assets" -type f \( -name '*.html' -o -name '*.txt' -o -name '*.json' \) -delete
+find "$staging/assets" -type f \( -name '*.html' -o -name '*.txt' -o -name '*.json' -o -name '*.xml' \) -delete
 ossutil cp -r "$staging/assets/" "$destination" \
   -f -j 8 --no-progress --cache-control 'public,max-age=3600'
 
@@ -68,10 +68,14 @@ ossutil cp -r "$staging/assets/" "$destination" \
 mkdir "$staging/pages"
 cp -a "$site_dir/." "$staging/pages/"
 rm -rf "$staging/pages/_next/static"
-find "$staging/pages" -type f ! \( -name '*.html' -o -name '*.txt' -o -name '*.json' \) -delete
-rm "$staging/pages/index.html" "$staging/pages/data/football.json" "$staging/pages/release.json"
+find "$staging/pages" -type f ! \( -name '*.html' -o -name '*.txt' -o -name '*.json' -o -name '*.xml' \) -delete
+rm "$staging/pages/index.html" "$staging/pages/data/football.json" "$staging/pages/robots.txt" "$staging/pages/sitemap.xml" "$staging/pages/release.json"
 ossutil cp -r "$staging/pages/" "$destination" \
   -f -j 8 --no-progress --cache-control 'no-cache'
+ossutil cp "$site_dir/robots.txt" "${destination}robots.txt" \
+  -f --no-progress --cache-control 'no-cache' --content-type 'text/plain; charset=utf-8'
+ossutil cp "$site_dir/sitemap.xml" "${destination}sitemap.xml" \
+  -f --no-progress --cache-control 'no-cache' --content-type 'application/xml; charset=utf-8'
 ossutil cp "$site_dir/data/football.json" "${destination}data/football.json" \
   -f --no-progress --cache-control 'no-cache' --content-type 'application/json; charset=utf-8'
 ossutil cp "$site_dir/index.html" "${destination}index.html" \

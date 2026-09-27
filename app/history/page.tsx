@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { HistoryAnimation } from "./history-animation";
 import { milestones } from "./milestones";
 import styles from "./history.module.css";
+import { pageMetadata } from "../seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/history/",
   title: "40 秒红军史",
   description: "用一段 40 秒的 Canvas 动画，走过利物浦从 1892 年建队到第 20 座联赛冠军的十个节点。",
-};
+});
 
 export default function HistoryPage() {
   return (
