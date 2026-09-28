@@ -1,0 +1,432 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>光环 · Messiah Complex</title>
+<link rel="stylesheet" href="node_modules/@fontsource/noto-serif-sc/300.css">
+<link rel="stylesheet" href="node_modules/@fontsource/noto-serif-sc/600.css">
+<link rel="stylesheet" href="node_modules/@fontsource/cormorant-garamond/500.css">
+<link rel="stylesheet" href="node_modules/@fontsource/cormorant-garamond/500-italic.css">
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// 《光环》— 一分钟讲清「弥赛亚情节」
+// Deterministic renderer: render(T) draws the frame at time T (seconds). No wall clock.
+const W = 1920, H = 1080;
+const cv = document.getElementById('c');
+cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+
+const SERIF = '"Noto Serif SC"';
+const LATIN = '"Cormorant Garamond"';
+
+// ---------- helpers ----------
+function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eout = t => 1 - Math.pow(1 - t, 3);
+const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mix = (a, b, t) => { const A = hex(a), B = hex(b); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], t))).join(',')})`; };
+const rgba = (h, a) => { const [r, g, b] = hex(h); return `rgba(${r},${g},${b},${a})`; };
+
+// ---------- pre-baked assets ----------
+const grain = [];
+for (let k = 0; k < 6; k++) {
+  const g = document.createElement('canvas'); g.width = g.height = 256;
+  const gx = g.getContext('2d'); const img = gx.createImageData(256, 256); const r = rng(99 + k);
+  for (let i = 0; i < img.data.length; i += 4) { const v = r() * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
+  gx.putImageData(img, 0, 0); grain.push(g);
+}
+const dust = (() => { const r = rng(7); return Array.from({ length: 110 }, () => ({ x: r() * W, y: r() * H, vx: (r() - .5) * 6, vy: -4 - r() * 10, s: .6 + r() * 1.8, a: .15 + r() * .35, ph: r() * 6.28 })); })();
+
+// the others: [x, y(feet), scale, own light]
+const OTHERS = [
+  [320, 925, 1.1, '#7fb2ff'], [550, 830, .84, '#6fe0c9'], [735, 770, .64, '#ff9fb2'],
+  [1185, 770, .64, '#ffc27a'], [1370, 830, .84, '#b59bff'], [1600, 925, 1.1, '#9fe07a'],
+];
+const LINE_X = [300, 520, 740, 1180, 1400, 1620]; // final row, main figure at 960
+const ROW_Y = 870, ROW_S = 1.0;
+
+// shatter fragments -> stars
+const FRAG = (() => { const r = rng(2024); const N = 44; return Array.from({ length: N }, (_, i) => {
+  const th = i / N * Math.PI * 2 + (r() - .5) * .05;
+  return { th, span: Math.PI * 2 / N * (.55 + r() * .35), sp: 380 + r() * 900, dir: th + (r() - .5) * .9, lift: -150 - r() * 350,
+    spin: (r() - .5) * 14, tx: 90 + r() * (W - 180), ty: 50 + Math.pow(r(), 1.3) * 430, tw: r() * 6.28, tws: 1.5 + r() * 2.5 };
+}); })();
+
+// ---------- timeline ----------
+const T_SHATTER = 45.0;
+
+function mainState(T) {
+  let x = 1350, y = 900, s = 1.25;
+  const m1 = eio(inv(20.4, 22.2, T)); x = lerp(x, 960, m1); y = lerp(y, 880, m1); s = lerp(s, 1.32, m1);
+  const m2 = eio(inv(46.5, 50.5, T)); x = lerp(x, 960, m2); y = lerp(y, ROW_Y, m2); s = lerp(s, ROW_S, m2);
+  const weight = T < T_SHATTER ? eio(inv(22, 44, T)) : 1 - eout(inv(T_SHATTER, 46.8, T));
+  const alpha = eout(inv(12.0, 13.6, T));
+  return { x, y, s, sy: 1 - .13 * weight, alpha, weight };
+}
+
+function haloRadius(T) {
+  if (T < 20.8) return 62;
+  if (T < 22) return lerp(62, 80, eio(inv(20.8, 22, T)));
+  return 80 + 150 * eio(inv(22, 43, T));
+}
+
+// glare: the halo's light that blinds everyone else
+function glare(T) { return Math.min(eio(inv(21, 40.5, T)), 1 - eio(inv(40.8, 42.6, T))); }
+
+// ---------- drawing primitives ----------
+function person(x, y, s, sy, col, alpha, glow) {
+  if (alpha <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  // floor pool of light
+  const fg = ctx.createRadialGradient(x, y, 0, x, y, 120 * s);
+  fg.addColorStop(0, typeof col === 'string' && col[0] === '#' ? rgba(col, .18 * clamp(glow / 40)) : 'rgba(255,255,255,.05)');
+  fg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = fg; ctx.beginPath(); ctx.ellipse(x, y, 120 * s, 22 * s, 0, 0, 7); ctx.fill();
+  ctx.shadowColor = col; ctx.shadowBlur = glow; ctx.fillStyle = col;
+  const hy = y - 150 * s * sy;
+  ctx.beginPath(); ctx.arc(x, hy, 26 * s, 0, 7); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x - 40 * s, y);
+  ctx.bezierCurveTo(x - 44 * s, y - 60 * s * sy, x - 46 * s, y - 110 * s * sy, x, y - 114 * s * sy);
+  ctx.bezierCurveTo(x + 46 * s, y - 110 * s * sy, x + 44 * s, y - 60 * s * sy, x + 40 * s, y);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function ring(x, y, rx, ry, alpha, bright, heat = 0, rot = 0) {
+  if (alpha <= 0) return;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const core = mix('#ffd98a', '#fff4ee', heat);
+  const outer = heat > .5 ? mix('#ffb070', '#ff6a4a', (heat - .5) * 2) : mix('#f5b54a', '#ffb070', heat * 2);
+  const passes = [[Math.max(rx, ry) * .5, .05 * bright], [Math.max(rx, ry) * .22, .12 * bright], [18, .35], [5, .9], [2, 1]];
+  passes.forEach(([lw, a], i) => {
+    ctx.globalAlpha = clamp(alpha * a);
+    ctx.strokeStyle = i < 3 ? outer : core;
+    ctx.lineWidth = lw;
+    ctx.beginPath(); ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2); ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function flare(x, y, k, heat = 0) {
+  if (k <= 0) return;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const R = 250 + 1100 * k;
+  const g = ctx.createRadialGradient(x, y, 0, x, y, R);
+  const c = mix('#ffe2a8', '#fff6f0', heat);
+  g.addColorStop(0, c.replace('rgb', 'rgba').replace(')', `,${.55 * k})`));
+  g.addColorStop(.25, c.replace('rgb', 'rgba').replace(')', `,${.18 * k})`));
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // anamorphic streak
+  ctx.translate(x, y); ctx.scale(1, .018);
+  const s = ctx.createRadialGradient(0, 0, 0, 0, 0, 1400 * k);
+  s.addColorStop(0, `rgba(190,215,255,${.7 * k})`); s.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = s; ctx.beginPath(); ctx.arc(0, 0, 1400 * k, 0, 7); ctx.fill();
+  ctx.restore();
+}
+
+// per-character reveal: rise + de-blur
+function text(T, str, x, y, o) {
+  const { size = 48, font = SERIF, weight = 300, color = '#ece7dc', align = 'center', t0, t1 = 1e9, stagger = .055, dur = .7, ls = 0, glow = 0, out = .6 } = o;
+  if (T < t0) return;
+  const aOut = 1 - inv(t1, t1 + out, T);
+  if (aOut <= 0) return;
+  ctx.save();
+  ctx.font = `${o.italic ? 'italic ' : ''}${weight} ${size}px ${font}`;
+  ctx.textBaseline = 'alphabetic';
+  const chars = [...str];
+  const ws = chars.map(c => ctx.measureText(c).width + ls);
+  const total = ws.reduce((a, b) => a + b, 0) - ls;
+  let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x;
+  ctx.fillStyle = color;
+  if (glow) { ctx.shadowColor = color; ctx.shadowBlur = glow; }
+  chars.forEach((c, i) => {
+    const p = inv(t0 + i * stagger, t0 + i * stagger + dur, T);
+    if (p > 0) {
+      const e = eout(p);
+      ctx.globalAlpha = e * aOut;
+      ctx.filter = e < .999 ? `blur(${(1 - e) * 9}px)` : 'none';
+      ctx.fillText(c, cx, y + (1 - e) * 16);
+    }
+    cx += ws[i];
+  });
+  ctx.restore();
+}
+
+// ---------- the frame ----------
+function render(T) {
+  const frame = Math.round(T * 30);
+  // camera shake on shatter
+  const sh = T >= T_SHATTER ? Math.exp(-(T - T_SHATTER) * 5) * 14 : (T > 43.4 && T < T_SHATTER ? inv(43.4, T_SHATTER, T) * 3 : 0);
+  const shr = rng(frame + 1);
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
+  // background
+  const bg = ctx.createRadialGradient(W / 2, H * .62, 50, W / 2, H * .62, W * .75);
+  const warm = T > 46 ? eio(inv(46, 52, T)) : 0;
+  bg.addColorStop(0, mix('#141826', '#1c1a22', warm)); bg.addColorStop(1, '#040509');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  ctx.translate((shr() - .5) * sh * 2, (shr() - .5) * sh * 2);
+
+  // horizon floor
+  const floorA = eout(inv(12, 14, T)) * (1 - inv(58.4, 60, T));
+  if (floorA > 0) {
+    const fl = ctx.createLinearGradient(0, 760, 0, H);
+    fl.addColorStop(0, 'rgba(0,0,0,0)'); fl.addColorStop(.25, `rgba(120,130,160,${.07 * floorA})`); fl.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = fl; ctx.fillRect(0, 760, W, H - 760);
+  }
+
+  // dust
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  dust.forEach(d => {
+    const x = ((d.x + d.vx * T) % W + W) % W, y = ((d.y + d.vy * T) % H + H) % H;
+    ctx.globalAlpha = d.a * (.6 + .4 * Math.sin(T * 1.3 + d.ph)) * (1 - inv(58.4, 60, T));
+    ctx.fillStyle = '#cfd6ff'; ctx.beginPath(); ctx.arc(x, y, d.s, 0, 7); ctx.fill();
+  });
+  ctx.restore();
+
+  // ===== ACT I: spark -> title ring (0 – 12.8) =====
+  if (T < 12.9) {
+    // ring morph path: spark(960,800) -> title circle(960,520,330) -> halo over main figure
+    const M = mainState(T);
+    const headTop = M.y - 150 * M.s * M.sy - 26 * M.s;
+    const hx = M.x, hy = headTop - 34 * M.s;
+    let x = 960, y = 800, rx = 4, ry = 4, a = eout(inv(.3, 1.4, T)), bright = .6;
+    const p1 = eio(inv(4.8, 6.9, T));
+    x = 960; y = lerp(800, 515, p1); rx = ry = lerp(4 + Math.sin(T * 3) * 1.2, 330, p1);
+    const p2 = eio(inv(11.0, 12.8, T));
+    x = lerp(x, hx, p2); y = lerp(y, hy, p2); rx = lerp(rx, 62, p2); ry = lerp(ry, 62 * .27, p2);
+    if (p1 <= 0) {
+      // the spark
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      const pulse = .8 + .2 * Math.sin(T * 4.2);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 90 * pulse);
+      g.addColorStop(0, `rgba(255,236,190,${.9 * a})`); g.addColorStop(.1, `rgba(255,210,130,${.45 * a})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 90 * pulse, 0, 7); ctx.fill();
+      ctx.restore();
+    } else {
+      ring(x, y, rx, ry, a, bright + .5 * (1 - p2), 0, 0);
+      if (p2 <= 0) flare(x, y, .12 * p1 * (1 - inv(10.6, 11.4, T)));
+    }
+    // intro lines
+    const io = 5.9;
+    text(T, '有一种人，', 960, 400, { size: 64, t0: 1.0, t1: io });
+    text(T, '总觉得全世界', 960, 510, { size: 64, t0: 2.3, t1: io });
+    text(T, '都在等自己去拯救。', 960, 620, { size: 64, t0: 3.6, t1: io, color: '#f6dfae' });
+    // title
+    text(T, '弥赛亚情节', 960 + 28, 560, { size: 150, weight: 600, t0: 7.1, t1: 10.7, stagger: .14, dur: 1.0, ls: 28, color: '#f7ecd6', glow: 30 });
+    text(T, 'MESSIAH  COMPLEX', 960 + 5, 648, { size: 34, font: LATIN, weight: 500, t0: 8.3, t1: 10.7, stagger: .035, ls: 10, color: '#d9b36a' });
+  }
+
+  // ===== main figure + halo (12 – 60) =====
+  const M = mainState(T);
+  const G = glare(T);
+  const heat = T < T_SHATTER ? eio(inv(28, 43, T)) : 0;
+  const tremble = T < T_SHATTER ? Math.pow(inv(42.6, T_SHATTER, T), 2) : 0;
+  const headTop = M.y - 150 * M.s * M.sy - 26 * M.s;
+  const tr = rng(frame * 7 + 3);
+  const hx = M.x + (tr() - .5) * 10 * tremble, hy = headTop - 34 * M.s + (tr() - .5) * 8 * tremble;
+  const R = haloRadius(T);
+
+  // the others
+  const ign = eio(inv(41.2, 43.6, T));
+  const toRow = eio(inv(46.5, 50.5, T));
+  const pull = T < 22 ? 0 : (T < 27.2 ? .05 : T < 32.4 ? .10 : .15) * (1 - ign);
+  const pullS = pull ? pull : 0;
+  const othersA = eout(inv(21, 23.2, T)) * (1 - inv(58.4, 60, T));
+  const oPos = OTHERS.map(([x, y, s, c], i) => {
+    // pull toward the centre (eased by index-independent smoothing)
+    const px = lerp(x, 960, pullS), py = lerp(y, 880, pullS * .5);
+    return { x: lerp(px, LINE_X[i], toRow), y: lerp(py, ROW_Y, toRow), s: lerp(s, ROW_S, toRow), c };
+  });
+
+  // strings from the halo to everyone (control disguised as care)
+  const strA = eout(inv(22.4, 24, T)) * (1 - eio(inv(40.9, 42.2, T)));
+  if (strA > 0 && T < T_SHATTER) {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    oPos.forEach((o, i) => {
+      const side = o.x < hx ? -1 : 1;
+      const sx = hx + side * R * (.55 + .1 * (i % 3)), sy = hy + R * .27 * .6;
+      const ex = o.x, ey = o.y - 150 * o.s - 26 * o.s;
+      const snap = inv(40.9 + i * .12, 42.0 + i * .12, T);
+      const midx = (sx + ex) / 2, midy = Math.max(sy, ey) + 60 + 30 * Math.sin(T * 1.7 + i) - 200 * snap;
+      ctx.globalAlpha = strA * (.35 + .25 * Math.sin(T * 5 + i * 1.3)) * (1 - snap);
+      ctx.strokeStyle = '#ffd690'; ctx.lineWidth = 1.2 + 1.8 * G;
+      ctx.shadowColor = '#ffc060'; ctx.shadowBlur = 12;
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.quadraticCurveTo(midx, midy, lerp(ex, midx, snap * .6), lerp(ey, midy, snap * .6)); ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // draw others (back to front)
+  [...oPos.keys()].sort((a, b) => oPos[a].y - oPos[b].y).forEach(i => {
+    const o = oPos[i];
+    const bow = pullS * .5;
+    const dim = mix('#3a3f4d', '#2a2d36', G);
+    const col = ign > 0 ? mix('#3a3f4d', o.c, ign) : dim;
+    person(o.x, o.y, o.s, 1 - bow * .4, col, othersA * (1 - G * .45 * (1 - ign)), 45 * ign * o.s);
+  });
+
+  // main figure
+  if (M.alpha > 0) {
+    const selfCol = T < T_SHATTER ? mix('#e9e4da', '#fff8ee', heat) : mix('#fff8ee', '#ffd89a', eout(inv(T_SHATTER, 49, T)));
+    const selfGlow = T < T_SHATTER ? 30 + 50 * G : lerp(80, 45, eout(inv(T_SHATTER, 49, T)));
+    person(M.x + (tr() - .5) * 6 * tremble, M.y, M.s, M.sy, selfCol, M.alpha * (1 - inv(58.4, 60, T)), selfGlow);
+  }
+
+  // halo (until it breaks)
+  if (T >= 12.8 && T < T_SHATTER) {
+    const flick = tremble > 0 ? (.7 + .3 * Math.sin(T * 90) * Math.sin(T * 37)) : 1;
+    const bright = .5 + 1.3 * G + .4 * tremble;
+    ring(hx, hy, R, R * .27, flick, bright, heat);
+    flare(hx, hy, Math.max(G, .06) * (T < 21 ? .5 : 1), heat);
+  }
+
+  // shatter -> stars
+  if (T >= T_SHATTER) {
+    const dt = T - T_SHATTER, k = 2.6;
+    const toStar = eio(inv(46.6, 50.8, T));
+    const fadeAll = 1 - inv(58.4, 60, T);
+    const Rs = haloRadius(T_SHATTER - .001);
+    const sm = mainState(T_SHATTER - .001);
+    const c0x = sm.x, c0y = sm.y - 150 * sm.s * sm.sy - 26 * sm.s - 34 * sm.s;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    FRAG.forEach(f => {
+      const d = (1 - Math.exp(-k * dt)) / k;
+      const px = c0x + Math.cos(f.th) * Rs + Math.cos(f.dir) * f.sp * d;
+      const py = c0y + Math.sin(f.th) * Rs * .27 + Math.sin(f.dir) * f.sp * .5 * d + f.lift * d;
+      const x = lerp(px, f.tx, toStar), y = lerp(py, f.ty, toStar);
+      const tw = .55 + .45 * Math.sin(T * f.tws + f.tw);
+      // fragment (arc) fading into a star (dot)
+      if (toStar < 1) {
+        ctx.save(); ctx.translate(x, y); ctx.rotate(f.spin * d);
+        ctx.globalAlpha = (1 - toStar) * fadeAll;
+        ctx.strokeStyle = '#ffe3a6'; ctx.lineWidth = 4; ctx.shadowColor = '#ffb24a'; ctx.shadowBlur = 16;
+        ctx.beginPath(); ctx.ellipse(-Math.cos(f.th) * Rs, -Math.sin(f.th) * Rs * .27, Rs, Rs * .27, 0, f.th - f.span / 2, f.th + f.span / 2); ctx.stroke();
+        ctx.restore();
+      }
+      if (toStar > 0) {
+        const r = 2 + 2.2 * tw;
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r * 7);
+        g.addColorStop(0, `rgba(255,240,210,${toStar * fadeAll * tw})`); g.addColorStop(.18, `rgba(255,210,150,${.35 * toStar * fadeAll * tw})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 7, 0, 7); ctx.fill();
+      }
+    });
+    ctx.restore();
+
+    // hands held: thin light between neighbours
+    const link = inv(51.0, 54.2, T) * fadeAll;
+    if (link > 0) {
+      const row = [...oPos.slice(0, 3), { x: M.x, y: M.y, s: M.s }, ...oPos.slice(3)];
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = '#ffe2b0'; ctx.lineWidth = 2; ctx.shadowColor = '#ffcf80'; ctx.shadowBlur = 14;
+      for (let i = 0; i < row.length - 1; i++) {
+        const a = row[i], b = row[i + 1];
+        const p = clamp(link * 1.6 - Math.abs(i - 2.5) * .12);
+        if (p <= 0) continue;
+        const y1 = a.y - 62 * a.s, y2 = b.y - 62 * b.s;
+        const x1 = a.x + 44 * a.s, x2 = b.x - 44 * b.s;
+        const mx = (x1 + x2) / 2;
+        ctx.globalAlpha = .75;
+        ctx.beginPath(); ctx.moveTo(mx - (mx - x1) * p, lerp(y1, y2, .5 - .5 * p) + 10 * (1 - p));
+        ctx.quadraticCurveTo(mx, (y1 + y2) / 2 + 18, mx + (x2 - mx) * p, lerp(y1, y2, .5 + .5 * p) + 10 * (1 - p)); ctx.stroke();
+      }
+      ctx.restore();
+    }
+    // flash
+    const fl = Math.exp(-dt * 7);
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = `rgba(255,246,230,${.85 * fl})`; ctx.fillRect(0, 0, W, H); ctx.restore();
+  }
+
+  // ===== ACT II: definition (12.6 – 20.6) =====
+  if (T > 12 && T < 21.5) {
+    const L = 170;
+    text(T, 'MESSIAH', L, 250, { size: 42, font: LATIN, italic: true, weight: 500, align: 'left', t0: 12.6, t1: 16.0, ls: 10, color: '#d9b36a' });
+    text(T, '弥赛亚', L, 380, { size: 110, weight: 600, align: 'left', t0: 12.9, t1: 16.0, stagger: .12, ls: 12, color: '#f5ecd9' });
+    text(T, '源自希伯来语 Mashiach', L, 480, { size: 42, align: 'left', t0: 13.7, t1: 16.0, stagger: .04 });
+    text(T, '意为「受膏者」—— 救世主。', L, 550, { size: 42, align: 'left', t0: 14.5, t1: 16.0, stagger: .045, color: '#f6dfae' });
+
+    text(T, 'COMPLEX', L, 250, { size: 42, font: LATIN, italic: true, weight: 500, align: 'left', t0: 16.5, t1: 20.1, ls: 10, color: '#d9b36a' });
+    text(T, '弥赛亚情节', L, 380, { size: 100, weight: 600, align: 'left', t0: 16.7, t1: 20.1, stagger: .1, ls: 10, color: '#f5ecd9' });
+    text(T, '深信自己注定要去拯救他人，', L, 480, { size: 44, align: 'left', t0: 17.5, t1: 20.1, stagger: .045 });
+    text(T, '甚至 —— 拯救世界。', L, 550, { size: 44, align: 'left', t0: 18.5, t1: 20.1, stagger: .06, color: '#f6dfae' });
+    text(T, '※ 通俗心理学概念，并非正式临床诊断', L, 660, { size: 26, align: 'left', t0: 19.0, t1: 20.1, stagger: .015, color: '#8a8fa0' });
+  }
+
+  // ===== ACT III: three symptoms (22 – 37.4) =====
+  const sym = [
+    [22.0, '01', '「没有我，他们就不行。」', '过度承担 · 把别人的人生扛在自己肩上'],
+    [27.2, '02', '「被需要，我才有价值。」', '自我价值 · 只建立在“拯救”之上'],
+    [32.4, '03', '「我没事，先顾他们。」', '忽视自己 · 直到被耗尽'],
+  ];
+  sym.forEach(([t0, n, q, sub]) => {
+    if (T < t0 || T > t0 + 6) return;
+    const t1 = t0 + 4.6;
+    text(T, n, 960, 120, { size: 46, font: LATIN, weight: 500, t0, t1, ls: 6, color: '#d9b36a' });
+    text(T, q, 960, 225, { size: 70, weight: 600, t0: t0 + .2, t1, stagger: .06, color: '#fbf3e4', glow: 18 });
+    text(T, sub, 960, 300, { size: 34, t0: t0 + 1.1, t1, stagger: .03, ls: 2, color: '#a9adbb' });
+  });
+
+  // ===== ACT IV: the twist (37.8 – 44.9) =====
+  text(T, '可是光环越亮，就越看不见——', 960, 170, { size: 60, t0: 37.8, t1: 44.2, stagger: .07, color: '#fbf3e4' });
+  text(T, '每个人，本来都有自己的光。', 960, 265, { size: 60, weight: 600, t0: 40.4, t1: 44.2, stagger: .08, color: '#ffe0a8', glow: 22 });
+
+  // ===== ACT V: resolution (47 – 60) =====
+  text(T, '你不必成为谁的救世主。', 960, 230, { size: 72, weight: 600, t0: 47.2, t1: 50.3, stagger: .08, color: '#fbf3e4', glow: 16 });
+  text(T, '真正的帮助，是并肩同行，', 960, 190, { size: 62, t0: 50.8, t1: 54.7, stagger: .06, color: '#fbf3e4' });
+  text(T, '而不是高高在上。', 960, 285, { size: 62, t0: 52.2, t1: 54.7, stagger: .07, color: '#ffe0a8' });
+  text(T, '弥赛亚情节', 960 + 14, 250, { size: 96, weight: 600, t0: 55.4, t1: 58.4, stagger: .1, ls: 14, color: '#f7ecd6', glow: 24, out: 1.4 });
+  text(T, 'MESSIAH  COMPLEX', 960 + 7, 320, { size: 32, font: LATIN, weight: 500, t0: 56.0, t1: 58.4, stagger: .03, ls: 14, color: '#d9b36a', out: 1.4 });
+  text(T, '放下光环，才看得见彼此。', 960, 395, { size: 38, t0: 56.5, t1: 58.4, stagger: .05, color: '#c9ccd6', out: 1.4 });
+
+  // ---------- post: vignette, grain, fades ----------
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * .35, W / 2, H / 2, W * .72);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.72)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .09;
+  const pat = ctx.createPattern(grain[frame % grain.length], 'repeat');
+  ctx.translate((frame * 73) % 256, (frame * 151) % 256);
+  ctx.fillStyle = pat; ctx.fillRect(-256, -256, W + 512, H + 512);
+  ctx.restore();
+  const black = Math.max(1 - inv(0, .6, T), inv(59.0, 60, T));
+  if (black > 0) { ctx.fillStyle = `rgba(0,0,0,${black})`; ctx.fillRect(0, 0, W, H); }
+}
+
+const ALL_TEXT = '有一种人，总觉得全世界都在等自己去拯救。弥赛亚情节源自希伯来语意为「受膏者」——救世主。深信自己注定要去拯救他人，甚至拯救世界。※通俗心理学概念并非正式临床诊断「没有我他们就不行。」过度承担·把别人的人生扛在肩上被需要才有价值自我只建立在“”之上我没事先顾忽视直到耗尽可是光环越亮就看不见每个本来都有的光。你不必成为谁的真正帮助是并肩同行而不高在放下才得见彼此Mashiach';
+window.ready = (async () => {
+  await Promise.all([
+    document.fonts.load(`300 64px ${SERIF}`, ALL_TEXT),
+    document.fonts.load(`600 64px ${SERIF}`, ALL_TEXT),
+    document.fonts.load(`500 40px ${LATIN}`, 'MESSIAHCOMPLEX0123'),
+    document.fonts.load(`italic 500 40px ${LATIN}`, 'MESSIAHCOMPLEX'),
+  ]);
+  await document.fonts.ready;
+  return true;
+})();
+window.render = render;
+
+// live preview when opened directly: ?t=12.5 to freeze, otherwise loops
+if (!navigator.webdriver) {
+  window.ready.then(() => {
+    const q = new URLSearchParams(location.search);
+    if (q.has('t')) return render(parseFloat(q.get('t')));
+    const start = performance.now();
+    (function loop(now) { render(((now - start) / 1000) % 60); requestAnimationFrame(loop); })(start);
+  });
+}
+</script>
+</body>
+</html>
