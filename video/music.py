@@ -208,8 +208,8 @@ t = 0.0
 while t < 9.8:  # heartbeat, accelerating feel
     put(drums, kick(0.8), t, 0.9); put(drums, kick(0.5), t + 0.22, 0.9)
     t += BEAT * 2 if t < 3 else BEAT
-for tt in (0.5, 3.05, 5.3): put(fx, whoosh(0.6, True, 0.25, 400, 5000), tt - 0.45)
-put(fx, whoosh(0.9, True, 0.3, 300, 4000), 3.6)  # dash draw
+# (whoosh removed) for tt in (0.5, 3.05, 5.3): put(fx, whoosh(0.6, True, 0.25, 400, 5000), tt - 0.45)
+# (whoosh removed)
 put(fx, riser(2.05, 0.6), 7.8)
 for i in range(7):
     tt = 7.8125 + i * BEAT / 2
@@ -219,7 +219,7 @@ for i in range(7):
 # ---- 10.0 IMPACT + TITLE
 put(fx, boom(1.0), 10.0, 1.0)
 put(fx, revcrash(0.6, 0.0 + 0.7), 9.4)
-put(fx, whoosh(0.6, False, 0.4, 600, 9000), 10.0)
+# (whoosh removed)
 for tt in (10.05, 10.37): put(drums, tom(70, 0.9, 0.5), tt, 1.0)
 put(drums, tom(70, 0.9, 0.5), 10.0, 1.0)
 four_floor(10.625 if False else 10.0 + BEAT, 17.5, 1.0, True, True, 0.3)
@@ -230,9 +230,9 @@ play_motif(10.0, 3, prog=["D", "A", "Bm", "G"], v=0.45, oct_=0)
 # typing ticks (title tagline typewriter 12.2–13.8)
 for k in range(31): put(fx, tick(0.28), 10 + 2.2 + k * (1.6 / 31))
 # nav list slides
-for i in range(5): put(fx, whoosh(0.3, True, 0.14, 800, 5000), 10 + 2.6 + i * 0.22 - 0.1)
+# (whoosh removed) for i in range(5): put(fx, whoosh(0.3, True, 0.14, 800, 5000), 10 + 2.6 + i * 0.22 - 0.1)
 # transition whoosh helper
-def wipe(tb): put(fx, whoosh(0.64, True, 0.5, 250, 8000), tb - 0.34); put(fx, boom(0.28, 1.4), tb - 0.02, 1.0)
+def wipe(tb): put(fx, whoosh(0.5, True, 0.26, 250, 6000), tb - 0.28); put(fx, boom(0.28, 1.4), tb - 0.02, 1.0)
 # ---- 17.5–40 MATCHDAY
 wipe(17.5)
 four_floor(17.5, 40, 1.0, True, True, 0.32)
@@ -241,15 +241,15 @@ arpeggio(17.5, 40, v=0.3)
 play_motif(25.0, 4, oct_=0, v=0.4, start_bar=0)
 play_motif(32.5, 6, oct_=0, v=0.42, start_bar=0)
 for tt in (17.5 + 5.625, 17.5 + 11.25, 17.5 + 16.875):
-    put(fx, whoosh(0.5, True, 0.35, 300, 6000), tt - 0.4); put(fx, tick(0.6), tt); put(drums, tom(110, 0.6, 0.4), tt, 1.0)
-for i, tt in enumerate((17.5 + 5.2, 17.5 + 5.36, 17.5 + 5.52)): put(fx, whoosh(0.4, True, 0.18, 300, 4000), tt)
+    put(fx, tick(0.6), tt); put(drums, tom(110, 0.6, 0.4), tt, 1.0)
+# (whoosh removed) for i, tt in enumerate((17.5 + 5.2, 17.5 + 5.36, 17.5 + 5.52)): put(fx, whoosh(0.4, True, 0.18, 300, 4000), tt)
 # ---- 40–50 ARCHIVE
 wipe(40)
 four_floor(40, 50, 1.0, True, True, 0.34)
 harmony(40, 50, pad_v=0.5, bass_v=0.8)
 arpeggio(40, 50, v=0.32, octave=12)
 play_motif(40, 4, oct_=12, v=0.3, start_bar=0)
-put(fx, whoosh(0.6, True, 0.4, 300, 5000), 46.25 - 0.35); put(fx, boom(0.4, 1.5), 46.25, 1.0)
+put(fx, boom(0.4, 1.5), 46.25, 1.0)
 # ---- 50–70 SQUAD
 wipe(50)
 for i in range(10):  # number flash hits
@@ -276,7 +276,7 @@ while t < 81.25 - 1e-6:
     put(drums, hat(0.3), t + BEAT / 2, 1.0, 0.25); put(drums, hat(0.22), t + BEAT / 4, 1.0, -0.25); put(drums, hat(0.22), t + BEAT * .75, 1.0, 0.25)
     t += BEAT
 arpeggio(70, 81.25, prog=TP, v=0.28, octave=0, step=BEAT / 4)
-for i in range(4): put(fx, whoosh(0.6, True, 0.3, 300, 5000), 70 + 0.9 + [0, 0.6, 1.85, 3.1][i] * 1.0 - 0.4)
+# (whoosh removed) for i in range(4): put(fx, whoosh(0.6, True, 0.3, 300, 5000), 70 + 0.9 + [0, 0.6, 1.85, 3.1][i] * 1.0 - 0.4)
 put(fx, riser(BEAT * 4, 0.7), 81.25 - BEAT * 4)
 # ---- 81.25–87.5 FACTS (light)
 wipe(81.25)
@@ -297,7 +297,7 @@ arpeggio(89.5, 99.5, prog=HP, v=0.24, octave=12, step=BEAT)
 t = 89.5
 while t < 99.5: put(drums, kick(0.7), t, 0.9) if int(round((t - 89.5) / BEAT)) % 2 == 0 else None; t += BEAT
 for i, tt in enumerate(sc):
-    put(fx, whoosh(0.55, True, 0.3, 300, 5000), tt - 0.4); put(drums, tom(70, 0.6, 0.6), tt, 1.0)
+    put(drums, tom(70, 0.6, 0.6), tt, 1.0)
 # 1989 hush: 99.5–103.9 only sustained strings, no drums
 put(harm, pad([38, 50, 57, 62], 4.6, 0.5, 900, 1.5, 1.5), 99.4)
 put(harm, choir(69, 4.4, 0.16), 99.5); put(harm, choir(66, 4.4, 0.13), 99.5)
@@ -314,7 +314,7 @@ play_motif(104, 2, prog=["D", "A", "Bm", "G"], v=0.5, oct_=0)
 play_motif(107.5, 1, prog=["D", "A", "Bm", "G"], v=0.5, oct_=12, start_bar=0)
 put(harm, choir(74, 5.5, 0.22), 104.2); put(harm, choir(78, 5.5, 0.2), 104.2); put(harm, choir(81, 5.5, 0.18), 104.2)
 put(amb, crowd(8.0, 0.22) * np.linspace(0.2, 1.0, int(8 * SR)), 102.0)
-put(fx, whoosh(0.6, True, 0.4, 300, 5000), 105.75 - 0.4); put(fx, whoosh(0.6, True, 0.4, 300, 5000), 107.5 - 0.4)
+# (whoosh removed)
 # ---- 110–120 OUTRO
 # hush under "你永远不会独行"
 put(harm, pad([38, 45, 50, 57, 62], 3.9, 0.55, 900, 0.3, 0.6), 110.0)
@@ -324,7 +324,7 @@ put(fx, riser(BEAT * 2, 0.8), 113.75 - BEAT * 2 + 0.05)
 # flood hit
 T = 113.75
 put(fx, boom(1.1, 3.5), T, 1.0)
-put(fx, whoosh(0.6, False, 0.5, 600, 9000), T)
+put(fx, whoosh(0.5, False, 0.28, 600, 7000), T)
 four_floor(T, 118.75, 1.0, True, True, 0.38)
 harmony(T, 118.75, prog=["D", "A", "Bm", "G"], pad_v=0.65, bass_v=0.95, bright=2800)
 arpeggio(T, 118.75, prog=["D", "A", "Bm", "G"], v=0.34, octave=12)
