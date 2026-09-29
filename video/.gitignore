@@ -1,0 +1,8 @@
+node_modules/
+assets/shots/
+assets/players/
+frames/
+chunks/
+score.wav
+stills/
+list.txt

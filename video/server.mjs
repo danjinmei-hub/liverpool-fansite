@@ -1,0 +1,3 @@
+import { createServer } from "node:http"; import { readFile } from "node:fs/promises"; import { extname, resolve } from "node:path";
+const T={".html":"text/html; charset=utf-8",".js":"text/javascript",".css":"text/css",".woff2":"font/woff2",".woff":"font/woff",".png":"image/png",".jpg":"image/jpeg",".json":"application/json"};
+export function serve(port=4180){const root=resolve(".");return new Promise(r=>{const s=createServer(async(q,res)=>{try{const p=decodeURIComponent(new URL(q.url,"http://x").pathname);const f=resolve(root,"."+p);if(!f.startsWith(root))throw 0;const d=await readFile(f);res.writeHead(200,{"Content-Type":T[extname(f)]||"application/octet-stream"});res.end(d);}catch{res.writeHead(404).end()}}).listen(port,()=>r(s));});}

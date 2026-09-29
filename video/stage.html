@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Red Chorus — promo stage</title>
+<style>
+@import url("/node_modules/@fontsource/noto-sans-sc/500.css");
+@import url("/node_modules/@fontsource/noto-sans-sc/700.css");
+@import url("/node_modules/@fontsource/noto-sans-sc/900.css");
+@import url("/node_modules/@fontsource/noto-serif-sc/900.css");
+@import url("/node_modules/@fontsource/anton/400.css");
+@import url("/node_modules/@fontsource/oswald/500.css");
+@import url("/node_modules/@fontsource/oswald/700.css");
+:root{--red:#c8102e;--red2:#e31b3d;--deep:#35000c;--ink:#100e0e;--paper:#f4f1eb;--lime:#dfff5b;--gold:#e6bf62}
+*{box-sizing:border-box}
+html,body{margin:0;background:#000;overflow:hidden}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--ink);font-family:"Noto Sans SC",sans-serif;color:var(--paper)}
+#cam{position:absolute;inset:0;transform-origin:50% 50%}
+.abs{position:absolute}
+.scene{position:absolute;inset:0;visibility:hidden;overflow:hidden}
+.disp{font-family:Anton,"Noto Sans SC",sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.osw{font-family:Oswald,"Noto Sans SC",sans-serif;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.mask{line-height:1.15;overflow:hidden;padding:.06em .04em .14em;margin:-.06em -.04em -.14em;white-space:nowrap}
+.ch{display:inline-block;will-change:transform}
+.mock{position:absolute;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 60px 120px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.12)}
+.mock .bar{height:52px;background:#1b1818;display:flex;align-items:center;gap:10px;padding:0 20px}
+.mock .dot{width:14px;height:14px;border-radius:50%}
+.mock .url{margin-left:22px;flex:1;max-width:520px;height:30px;border-radius:15px;background:#2c2727;color:#b9b2b2;font:500 16px/30px Oswald,sans-serif;letter-spacing:.06em;padding:0 16px}
+.mock .vp{position:relative;overflow:hidden}
+.mock img.pg{position:absolute;left:0;top:0;display:block}
+.ring{position:absolute;border:5px solid var(--lime);border-radius:12px;box-shadow:0 0 0 3px rgba(16,14,14,.35),0 0 40px rgba(223,255,91,.55)}
+.ringlabel{position:absolute;background:var(--lime);color:#111;font:700 22px/1 Oswald,"Noto Sans SC",sans-serif;letter-spacing:.12em;padding:8px 14px;border-radius:6px;white-space:nowrap}
+.tag{display:inline-block;background:var(--lime);color:#111;font:700 24px/1 Oswald,"Noto Sans SC",sans-serif;letter-spacing:.2em;padding:10px 16px}
+.pill{position:absolute;border:2px solid rgba(244,241,235,.75);color:var(--paper);font:700 34px/1 "Noto Sans SC";padding:16px 30px;border-radius:60px;white-space:nowrap}
+.cap{position:absolute;font-weight:900;line-height:1.12;white-space:nowrap}
+.card{position:absolute;box-shadow:0 40px 90px rgba(0,0,0,.6)}
+.card img{display:block;width:100%;height:100%}
+#hud .mark{position:absolute;left:64px;top:48px;display:flex;align-items:center;gap:16px}
+.skew{background:var(--red);color:#fff;font:italic 700 26px/1 Oswald;letter-spacing:.04em;padding:14px 18px;transform:skewX(-10deg)}
+</style>
+</head>
+<body>
+<div id="root"><div id="cam"></div></div>
+<script src="/assets/history.js"></script>
+<script src="/stage.js"></script>
+</body>
+</html>
