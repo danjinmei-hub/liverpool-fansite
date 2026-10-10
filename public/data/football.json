@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-10-10T05:47:44.834Z",
+  "lastUpdated": "2026-10-10T12:27:16.852Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -1200,11 +1200,11 @@
         "shortName": "Arsenal",
         "tla": "ARS"
       },
-      "playedGames": 5,
+      "playedGames": 6,
       "won": 4,
-      "draw": 0,
+      "draw": 1,
       "lost": 1,
-      "points": 12,
+      "points": 13,
       "goalsFor": 8,
       "goalsAgainst": 4,
       "goalDifference": 4
@@ -1229,6 +1229,23 @@
     {
       "position": 4,
       "team": {
+        "id": 341,
+        "name": "Leeds United",
+        "shortName": "Leeds United",
+        "tla": "LEE"
+      },
+      "playedGames": 6,
+      "won": 2,
+      "draw": 4,
+      "lost": 0,
+      "points": 10,
+      "goalsFor": 7,
+      "goalsAgainst": 3,
+      "goalDifference": 4
+    },
+    {
+      "position": 5,
+      "team": {
         "id": 402,
         "name": "布伦特福德",
         "shortName": "Brentford",
@@ -1242,23 +1259,6 @@
       "goalsFor": 10,
       "goalsAgainst": 4,
       "goalDifference": 6
-    },
-    {
-      "position": 5,
-      "team": {
-        "id": 341,
-        "name": "Leeds United",
-        "shortName": "Leeds United",
-        "tla": "LEE"
-      },
-      "playedGames": 5,
-      "won": 2,
-      "draw": 3,
-      "lost": 0,
-      "points": 9,
-      "goalsFor": 7,
-      "goalsAgainst": 3,
-      "goalDifference": 4
     },
     {
       "position": 6,
