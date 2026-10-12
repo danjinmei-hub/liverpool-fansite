@@ -29,6 +29,20 @@ npm run dev
 npm run build
 ```
 
+## 发布质量门禁
+
+Linux / Node.js 22 下安装依赖和 Chromium 后，执行统一入口（不发布）：
+
+```bash
+npm ci
+npx playwright install --with-deps chromium
+npm run verify
+```
+
+`npm test` 调用同一门禁。它依次检查 lint、全部核心单元测试、比赛快照与 FotMob 映射、静态构建、HTTP 页面与资产、桌面和 375px 手机浏览器冒烟、实际静态产物的发布校验，以及 Sites/Vinext 构建和现有渲染测试。失败时返回非零状态。
+
+PR 自动运行只读的 `Release quality gate` 工作流。详细覆盖范围、审计发现、局限及分阶段命令见 [Release Quality Gate v1](docs/release-quality-gate-v1.md)。
+
 ## 自动比赛数据
 
 赛程、赛果与 Premier League 积分榜来自 [football-data.org](https://www.football-data.org/)。GitHub Actions 每 6 小时调用两次 API，并将结果写入 `public/data/football.json`。页面访问只读取缓存快照，不会直接调用足球数据 API；远端快照不可用时会继续显示随站点发布的备用数据。

@@ -6,7 +6,8 @@ import test from "node:test";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { footballSnapshotError } from "../../lib/football-snapshot.mjs";
+import { footballSnapshotError, selectSeasonMatches } from "../../lib/football-snapshot.mjs";
+import { getEditorialSections, getMatchEditorial, getMatchThread, matchEditorialError } from "../../lib/match-editorial.mjs";
 import { makeSnapshot } from "../fixtures/football-snapshot.mjs";
 import { assertHomepageSnapshot } from "../helpers/football-render-assertions.mjs";
 
@@ -57,6 +58,32 @@ for (const [games, expected] of [[0, "赛季样本尚未形成"], [1, "前 1 轮
     assert.ok(html.includes("TACTICAL REVIEW · THROUGH MD 02"));
   });
 }
+
+test("finished match with missing scores uses the same safe placeholder in HTML and metadata", async () => {
+  const snapshot = makeSnapshot();
+  snapshot.matches[0].score = { home: null, away: null };
+  const display = loadAppModule("matches/match-display.ts", {});
+  const { default: MatchPage, generateMetadata } = loadAppModule("matches/[id]/page.tsx", {
+    "next/link": { default: (props) => React.createElement("a", props) },
+    "next/navigation": { notFound: () => { throw new Error("Unexpected 404"); } },
+    "../../football-data": { fallbackFootballSnapshot: snapshot, getSeasonMatches: selectSeasonMatches },
+    "../../football-source": { getLatestFootballSnapshot: async () => snapshot },
+    "../../seo": { pageMetadata: (value) => value },
+    "../../fotmob-links": { getFotmobLink: () => null },
+    "../../../data/match-editorial.json": { default: { schemaVersion: 1, matches: {} } },
+    "../../../lib/match-editorial.mjs": { getEditorialSections, getMatchEditorial, getMatchThread, matchEditorialError },
+    "../match-display": display,
+    "../matches.module.css": { default: new Proxy({}, { get: (_, key) => key }) },
+  });
+  const params = Promise.resolve({ id: "101" });
+  const html = renderToStaticMarkup(await MatchPage({ params }));
+  assert.match(html, /数据源暂未提供/);
+  assert.match(html, /详细比赛中心链接尚未核验/);
+  assert.ok(!html.includes("undefined"));
+  const metadata = await generateMetadata({ params });
+  assert.ok(metadata.title.includes("Liverpool ——— Arsenal"));
+  assert.ok(!metadata.description.includes("null"));
+});
 
 for (const scenario of ["valid", "malformed", "stale", "http-error", "network-error", "static"]) {
   test(`snapshot source ${scenario}: safe fallback without football API calls`, async () => {

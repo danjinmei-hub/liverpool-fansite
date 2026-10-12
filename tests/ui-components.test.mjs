@@ -35,13 +35,14 @@ async function readCssTree(directory) {
   return contents.join("\n");
 }
 
-test("emits the catalog's animation and scrolling utilities", async () => {
+test("emits site CSS and the imported animation utilities", async () => {
   const css = await readCssTree(path.join(root, "dist"));
 
   assert.match(css, /--tw-enter-opacity/);
-  assert.match(css, /scrollbar-width:\s*thin/);
-  assert.match(css, /scrollbar-width:\s*none/);
-  assert.match(css, /scrollbar-gutter:\s*stable/);
+  // Tailwind emits only used utilities. The old catalog's scrollbar-thin and
+  // scrollbar-gutter utilities are absent from the pinned vendor stylesheet.
+  assert.match(css, /\.site-header\b/);
+  assert.match(css, /\.matchday\b/);
   assert.match(css, /scroll-fade-reveal-b/);
   assert.match(css, /mask-image:/);
   assert.match(css, /tw-shimmer/);

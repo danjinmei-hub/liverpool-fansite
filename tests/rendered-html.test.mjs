@@ -4,7 +4,14 @@ import test from "node:test";
 const developmentPreviewMeta =
   /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
 
-test("renders development preview metadata", async () => {
+test("renders production Worker HTML without development preview metadata", async (t) => {
+  // The built Worker is production output; development-only markers do not belong here.
+  const { readFile } = await import("node:fs/promises");
+  const snapshot = JSON.parse(await readFile(new URL("../public/data/football.json", import.meta.url), "utf8"));
+  t.mock.method(globalThis, "fetch", async (url) => {
+    assert.equal(String(url), "https://raw.githubusercontent.com/danjinmei-hub/liverpool-fansite/main/public/data/football.json");
+    return Response.json(snapshot);
+  });
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -29,5 +36,7 @@ test("renders development preview metadata", async () => {
     response.headers.get("content-type") ?? "",
     /^text\/html\b/i,
   );
-  assert.match(await response.text(), developmentPreviewMeta);
+  const html = await response.text();
+  assert.match(html, /RED CHORUS/);
+  assert.doesNotMatch(html, developmentPreviewMeta);
 });
