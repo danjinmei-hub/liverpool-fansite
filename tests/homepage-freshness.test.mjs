@@ -7,7 +7,11 @@ const snapshot = JSON.parse(
   await readFile(new URL("../public/data/football.json", import.meta.url), "utf8"),
 );
 
-test("renders homepage freshness fields from the football snapshot", async () => {
+test("renders homepage freshness fields from the football snapshot", async (t) => {
+  t.mock.method(globalThis, "fetch", async (url) => {
+    assert.equal(String(url), "https://raw.githubusercontent.com/danjinmei-hub/liverpool-fansite/main/public/data/football.json");
+    return Response.json(snapshot);
+  });
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("freshness-test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);

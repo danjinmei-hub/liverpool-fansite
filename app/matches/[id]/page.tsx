@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }).format(new Date(match.utcDate));
   const completed = completedStatuses.has(match.status);
   const fixture = completed
-    ? `${match.homeTeam.name} ${match.score.home}—${match.score.away} ${match.awayTeam.name}`
+    ? `${match.homeTeam.name} ${match.score.home ?? "—"}—${match.score.away ?? "—"} ${match.awayTeam.name}`
     : `${match.homeTeam.name} vs ${match.awayTeam.name}`;
   const round = match.matchday ? `第 ${match.matchday} 轮` : "";
   return pageMetadata({

@@ -51,18 +51,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run test:football
-      - run: npm run test:fotmob
-      - run: node --test tests/unit/match-editorial.test.mjs
-      - name: Audit FotMob coverage (missing links warn only)
-        run: npm run audit:fotmob
-      - run: npm run build:static
-      - run: npm run test:static
-      - run: npm run test:release
-      - name: Attach exact release manifest to the validated artifact
+      - run: npx playwright install --with-deps chromium
+      - name: Verify static production artifact and attach its checked release manifest
         env:
           RELEASE_SHA: ${{ needs.revision.outputs.source_sha }}
-        run: node scripts/prepare-release.mjs
+        run: npm run verify:static
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: production-browser-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         with:
           name: red-chorus-static-${{ github.run_id }}
@@ -84,10 +86,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Verify Sites / Vinext build
-        run: npm run build
-      - name: Verify rendered Sites routes
-        run: node --test tests/match-archive.test.mjs tests/homepage-freshness.test.mjs tests/seo-preview.test.mjs
+      - name: Verify Sites / Vinext build and all existing rendering checks
+        run: npm run verify:sites
       - name: Record Sites build target
         env:
           SOURCE_SHA: ${{ needs.revision.outputs.source_sha }}
