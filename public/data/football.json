@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-10-24T15:54:21.400Z",
+  "lastUpdated": "2026-10-24T20:44:40.687Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -1234,14 +1234,14 @@
         "shortName": "Chelsea",
         "tla": "CHE"
       },
-      "playedGames": 7,
+      "playedGames": 8,
       "won": 4,
       "draw": 1,
-      "lost": 2,
+      "lost": 3,
       "points": 13,
       "goalsFor": 17,
-      "goalsAgainst": 13,
-      "goalDifference": 4
+      "goalsAgainst": 15,
+      "goalDifference": 2
     },
     {
       "position": 5,
