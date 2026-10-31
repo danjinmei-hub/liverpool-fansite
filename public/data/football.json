@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-10-31T12:20:19.139Z",
+  "lastUpdated": "2026-10-31T21:30:01.225Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -1183,14 +1183,14 @@
         "shortName": "Man City",
         "tla": "MCI"
       },
-      "playedGames": 8,
+      "playedGames": 9,
       "won": 7,
       "draw": 0,
-      "lost": 1,
+      "lost": 2,
       "points": 21,
       "goalsFor": 20,
-      "goalsAgainst": 9,
-      "goalDifference": 11
+      "goalsAgainst": 10,
+      "goalDifference": 10
     },
     {
       "position": 2,
@@ -1217,17 +1217,34 @@
         "shortName": "Brighton Hove",
         "tla": "BHA"
       },
-      "playedGames": 8,
-      "won": 5,
+      "playedGames": 9,
+      "won": 6,
       "draw": 1,
       "lost": 2,
-      "points": 16,
-      "goalsFor": 23,
+      "points": 19,
+      "goalsFor": 24,
       "goalsAgainst": 7,
-      "goalDifference": 16
+      "goalDifference": 17
     },
     {
       "position": 4,
+      "team": {
+        "id": 61,
+        "name": "切尔西",
+        "shortName": "Chelsea",
+        "tla": "CHE"
+      },
+      "playedGames": 9,
+      "won": 5,
+      "draw": 1,
+      "lost": 3,
+      "points": 16,
+      "goalsFor": 19,
+      "goalsAgainst": 15,
+      "goalDifference": 4
+    },
+    {
+      "position": 5,
       "team": {
         "id": 64,
         "name": "利物浦",
@@ -1242,23 +1259,6 @@
       "goalsFor": 11,
       "goalsAgainst": 8,
       "goalDifference": 3
-    },
-    {
-      "position": 5,
-      "team": {
-        "id": 61,
-        "name": "切尔西",
-        "shortName": "Chelsea",
-        "tla": "CHE"
-      },
-      "playedGames": 8,
-      "won": 4,
-      "draw": 1,
-      "lost": 3,
-      "points": 13,
-      "goalsFor": 17,
-      "goalsAgainst": 15,
-      "goalDifference": 2
     }
   ]
 }
