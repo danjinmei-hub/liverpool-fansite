@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-11-07T12:55:29.133Z",
+  "lastUpdated": "2026-11-07T21:45:48.038Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -1183,14 +1183,14 @@
         "shortName": "Arsenal",
         "tla": "ARS"
       },
-      "playedGames": 9,
-      "won": 8,
+      "playedGames": 10,
+      "won": 9,
       "draw": 0,
       "lost": 1,
-      "points": 24,
-      "goalsFor": 14,
+      "points": 27,
+      "goalsFor": 15,
       "goalsAgainst": 5,
-      "goalDifference": 9
+      "goalDifference": 10
     },
     {
       "position": 2,
@@ -1200,14 +1200,14 @@
         "shortName": "Man City",
         "tla": "MCI"
       },
-      "playedGames": 9,
+      "playedGames": 10,
       "won": 7,
       "draw": 0,
-      "lost": 2,
+      "lost": 3,
       "points": 21,
-      "goalsFor": 20,
-      "goalsAgainst": 10,
-      "goalDifference": 10
+      "goalsFor": 21,
+      "goalsAgainst": 13,
+      "goalDifference": 8
     },
     {
       "position": 3,
