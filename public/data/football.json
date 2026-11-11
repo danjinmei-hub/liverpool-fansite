@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-11-10T19:41:23.184Z",
+  "lastUpdated": "2026-11-11T06:08:11.330Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
     "season": 2026,
-    "currentMatchday": 10
+    "currentMatchday": 11
   },
   "source": {
     "name": "football-data.org",
