@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-11-28T07:41:25.931Z",
+  "lastUpdated": "2026-11-28T19:57:22.780Z",
   "competition": {
     "code": "PL",
     "name": "Premier League",
@@ -1246,19 +1246,19 @@
     {
       "position": 5,
       "team": {
-        "id": 1044,
-        "name": "伯恩茅斯",
-        "shortName": "Bournemouth",
-        "tla": "BOU"
+        "id": 402,
+        "name": "布伦特福德",
+        "shortName": "Brentford",
+        "tla": "BRE"
       },
-      "playedGames": 11,
+      "playedGames": 12,
       "won": 5,
-      "draw": 3,
-      "lost": 3,
-      "points": 18,
-      "goalsFor": 18,
-      "goalsAgainst": 14,
-      "goalDifference": 4
+      "draw": 5,
+      "lost": 2,
+      "points": 20,
+      "goalsFor": 24,
+      "goalsAgainst": 11,
+      "goalDifference": 13
     }
   ]
 }
